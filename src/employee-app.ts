@@ -10,29 +10,7 @@ import './ui/ui-button';
 @customElement('employee-app')
 export class EmployeeApp extends LitElement {
   @state()
-  private employeeList: Employee[] = [
-    {
-      identifier: 1,
-      fullName: 'John Doe',
-      department: 'Engineering',
-      designation: 'Developer',
-      emailAddress: 'john@example.com',
-    },
-    {
-      identifier: 2,
-      fullName: 'Jane Smith',
-      department: 'HR',
-      designation: 'Manager',
-      emailAddress: 'jane@example.com',
-    },
-    {
-      identifier: 3,
-      fullName: 'Mike Johnson',
-      department: 'Finance',
-      designation: 'Analyst',
-      emailAddress: 'mike@example.com',
-    },
-  ];
+  private employeeList: Employee[] = [];
 
   @state()
   private employeeSelectedForEdit: Employee | null = null;
