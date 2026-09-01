@@ -258,12 +258,12 @@ var v = globalThis, y = (e) => e, b = v.trustedTypes, oe = b ? b.createPolicy("l
 	_$litType$: e,
 	strings: t,
 	values: n
-}))(1), N = Symbol.for("lit-noChange"), P = Symbol.for("lit-nothing"), F = /* @__PURE__ */ new WeakMap(), I = S.createTreeWalker(S, 129);
-function L(e, t) {
+}))(1), N = Symbol.for("lit-noChange"), P = Symbol.for("lit-nothing"), pe = /* @__PURE__ */ new WeakMap(), F = S.createTreeWalker(S, 129);
+function I(e, t) {
 	if (!T(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
 	return oe === void 0 ? t : oe.createHTML(t);
 }
-var pe = (e, t) => {
+var me = (e, t) => {
 	let n = e.length - 1, r = [], i, a = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", o = D;
 	for (let t = 0; t < n; t++) {
 		let n = e[t], s, c, l = -1, u = 0;
@@ -271,17 +271,17 @@ var pe = (e, t) => {
 		let d = o === k && e[t + 1].startsWith("/>") ? " " : "";
 		a += o === D ? n + le : l >= 0 ? (r.push(s), n.slice(0, l) + se + n.slice(l) + x + d) : n + x + (l === -2 ? t : d);
 	}
-	return [L(e, a + (e[n] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), r];
-}, R = class e {
+	return [I(e, a + (e[n] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), r];
+}, L = class e {
 	constructor({ strings: t, _$litType$: n }, r) {
 		let i;
 		this.parts = [];
-		let a = 0, o = 0, s = t.length - 1, c = this.parts, [l, u] = pe(t, n);
-		if (this.el = e.createElement(l, r), I.currentNode = this.el.content, n === 2 || n === 3) {
+		let a = 0, o = 0, s = t.length - 1, c = this.parts, [l, u] = me(t, n);
+		if (this.el = e.createElement(l, r), F.currentNode = this.el.content, n === 2 || n === 3) {
 			let e = this.el.content.firstChild;
 			e.replaceWith(...e.childNodes);
 		}
-		for (; (i = I.nextNode()) !== null && c.length < s;) {
+		for (; (i = F.nextNode()) !== null && c.length < s;) {
 			if (i.nodeType === 1) {
 				if (i.hasAttributes()) for (let e of i.getAttributeNames()) if (e.endsWith(se)) {
 					let t = u[o++], n = i.getAttribute(e).split(x), r = /([.?@])?(.*)/.exec(t);
@@ -290,7 +290,7 @@ var pe = (e, t) => {
 						index: a,
 						name: r[2],
 						strings: n,
-						ctor: r[1] === "." ? he : r[1] === "?" ? ge : r[1] === "@" ? _e : V
+						ctor: r[1] === "." ? ge : r[1] === "?" ? _e : r[1] === "@" ? ve : B
 					}), i.removeAttribute(e);
 				} else e.startsWith(x) && (c.push({
 					type: 6,
@@ -300,7 +300,7 @@ var pe = (e, t) => {
 					let e = i.textContent.split(x), t = e.length - 1;
 					if (t > 0) {
 						i.textContent = b ? b.emptyScript : "";
-						for (let n = 0; n < t; n++) i.append(e[n], C()), I.nextNode(), c.push({
+						for (let n = 0; n < t; n++) i.append(e[n], C()), F.nextNode(), c.push({
 							type: 2,
 							index: ++a
 						});
@@ -328,12 +328,12 @@ var pe = (e, t) => {
 		return n.innerHTML = e, n;
 	}
 };
-function z(e, t, n = e, r) {
+function R(e, t, n = e, r) {
 	if (t === N) return t;
 	let i = r === void 0 ? n._$Cl : n._$Co?.[r], a = w(t) ? void 0 : t._$litDirective$;
-	return i?.constructor !== a && (i?._$AO?.(!1), a === void 0 ? i = void 0 : (i = new a(e), i._$AT(e, n, r)), r === void 0 ? n._$Cl = i : (n._$Co ??= [])[r] = i), i !== void 0 && (t = z(e, i._$AS(e, t.values), i, r)), t;
+	return i?.constructor !== a && (i?._$AO?.(!1), a === void 0 ? i = void 0 : (i = new a(e), i._$AT(e, n, r)), r === void 0 ? n._$Cl = i : (n._$Co ??= [])[r] = i), i !== void 0 && (t = R(e, i._$AS(e, t.values), i, r)), t;
 }
-var me = class {
+var he = class {
 	constructor(e, t) {
 		this._$AV = [], this._$AN = void 0, this._$AD = e, this._$AM = t;
 	}
@@ -345,22 +345,22 @@ var me = class {
 	}
 	u(e) {
 		let { el: { content: t }, parts: n } = this._$AD, r = (e?.creationScope ?? S).importNode(t, !0);
-		I.currentNode = r;
-		let i = I.nextNode(), a = 0, o = 0, s = n[0];
+		F.currentNode = r;
+		let i = F.nextNode(), a = 0, o = 0, s = n[0];
 		for (; s !== void 0;) {
 			if (a === s.index) {
 				let t;
-				s.type === 2 ? t = new B(i, i.nextSibling, this, e) : s.type === 1 ? t = new s.ctor(i, s.name, s.strings, this, e) : s.type === 6 && (t = new ve(i, this, e)), this._$AV.push(t), s = n[++o];
+				s.type === 2 ? t = new z(i, i.nextSibling, this, e) : s.type === 1 ? t = new s.ctor(i, s.name, s.strings, this, e) : s.type === 6 && (t = new ye(i, this, e)), this._$AV.push(t), s = n[++o];
 			}
-			a !== s?.index && (i = I.nextNode(), a++);
+			a !== s?.index && (i = F.nextNode(), a++);
 		}
-		return I.currentNode = S, r;
+		return F.currentNode = S, r;
 	}
 	p(e) {
 		let t = 0;
 		for (let n of this._$AV) n !== void 0 && (n.strings === void 0 ? n._$AI(e[t]) : (n._$AI(e, n, t), t += n.strings.length - 2)), t++;
 	}
-}, B = class e {
+}, z = class e {
 	get _$AU() {
 		return this._$AM?._$AU ?? this._$Cv;
 	}
@@ -378,7 +378,7 @@ var me = class {
 		return this._$AB;
 	}
 	_$AI(e, t = this) {
-		e = z(this, e, t), w(e) ? e === P || e == null || e === "" ? (this._$AH !== P && this._$AR(), this._$AH = P) : e !== this._$AH && e !== N && this._(e) : e._$litType$ === void 0 ? e.nodeType === void 0 ? ue(e) ? this.k(e) : this._(e) : this.T(e) : this.$(e);
+		e = R(this, e, t), w(e) ? e === P || e == null || e === "" ? (this._$AH !== P && this._$AR(), this._$AH = P) : e !== this._$AH && e !== N && this._(e) : e._$litType$ === void 0 ? e.nodeType === void 0 ? ue(e) ? this.k(e) : this._(e) : this.T(e) : this.$(e);
 	}
 	O(e) {
 		return this._$AA.parentNode.insertBefore(e, this._$AB);
@@ -390,16 +390,16 @@ var me = class {
 		this._$AH !== P && w(this._$AH) ? this._$AA.nextSibling.data = e : this.T(S.createTextNode(e)), this._$AH = e;
 	}
 	$(e) {
-		let { values: t, _$litType$: n } = e, r = typeof n == "number" ? this._$AC(e) : (n.el === void 0 && (n.el = R.createElement(L(n.h, n.h[0]), this.options)), n);
+		let { values: t, _$litType$: n } = e, r = typeof n == "number" ? this._$AC(e) : (n.el === void 0 && (n.el = L.createElement(I(n.h, n.h[0]), this.options)), n);
 		if (this._$AH?._$AD === r) this._$AH.p(t);
 		else {
-			let e = new me(r, this), n = e.u(this.options);
+			let e = new he(r, this), n = e.u(this.options);
 			e.p(t), this.T(n), this._$AH = e;
 		}
 	}
 	_$AC(e) {
-		let t = F.get(e.strings);
-		return t === void 0 && F.set(e.strings, t = new R(e)), t;
+		let t = pe.get(e.strings);
+		return t === void 0 && pe.set(e.strings, t = new L(e)), t;
 	}
 	k(t) {
 		T(this._$AH) || (this._$AH = [], this._$AR());
@@ -416,7 +416,7 @@ var me = class {
 	setConnected(e) {
 		this._$AM === void 0 && (this._$Cv = e, this._$AP?.(e));
 	}
-}, V = class {
+}, B = class {
 	get tagName() {
 		return this.element.tagName;
 	}
@@ -428,43 +428,43 @@ var me = class {
 	}
 	_$AI(e, t = this, n, r) {
 		let i = this.strings, a = !1;
-		if (i === void 0) e = z(this, e, t, 0), a = !w(e) || e !== this._$AH && e !== N, a && (this._$AH = e);
+		if (i === void 0) e = R(this, e, t, 0), a = !w(e) || e !== this._$AH && e !== N, a && (this._$AH = e);
 		else {
 			let r = e, o, s;
-			for (e = i[0], o = 0; o < i.length - 1; o++) s = z(this, r[n + o], t, o), s === N && (s = this._$AH[o]), a ||= !w(s) || s !== this._$AH[o], s === P ? e = P : e !== P && (e += (s ?? "") + i[o + 1]), this._$AH[o] = s;
+			for (e = i[0], o = 0; o < i.length - 1; o++) s = R(this, r[n + o], t, o), s === N && (s = this._$AH[o]), a ||= !w(s) || s !== this._$AH[o], s === P ? e = P : e !== P && (e += (s ?? "") + i[o + 1]), this._$AH[o] = s;
 		}
 		a && !r && this.j(e);
 	}
 	j(e) {
 		e === P ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, e ?? "");
 	}
-}, he = class extends V {
+}, ge = class extends B {
 	constructor() {
 		super(...arguments), this.type = 3;
 	}
 	j(e) {
 		this.element[this.name] = e === P ? void 0 : e;
 	}
-}, ge = class extends V {
+}, _e = class extends B {
 	constructor() {
 		super(...arguments), this.type = 4;
 	}
 	j(e) {
 		this.element.toggleAttribute(this.name, !!e && e !== P);
 	}
-}, _e = class extends V {
+}, ve = class extends B {
 	constructor(e, t, n, r, i) {
 		super(e, t, n, r, i), this.type = 5;
 	}
 	_$AI(e, t = this) {
-		if ((e = z(this, e, t, 0) ?? P) === N) return;
+		if ((e = R(this, e, t, 0) ?? P) === N) return;
 		let n = this._$AH, r = e === P && n !== P || e.capture !== n.capture || e.once !== n.once || e.passive !== n.passive, i = e !== P && (n === P || r);
 		r && this.element.removeEventListener(this.name, this, n), i && this.element.addEventListener(this.name, this, e), this._$AH = e;
 	}
 	handleEvent(e) {
 		typeof this._$AH == "function" ? this._$AH.call(this.options?.host ?? this.element, e) : this._$AH.handleEvent(e);
 	}
-}, ve = class {
+}, ye = class {
 	constructor(e, t, n) {
 		this.element = e, this.type = 6, this._$AN = void 0, this._$AM = t, this.options = n;
 	}
@@ -472,18 +472,18 @@ var me = class {
 		return this._$AM._$AU;
 	}
 	_$AI(e) {
-		z(this, e);
+		R(this, e);
 	}
-}, ye = v.litHtmlPolyfillSupport;
-ye?.(R, B), (v.litHtmlVersions ??= []).push("3.3.3");
-var be = (e, t, n) => {
+}, be = v.litHtmlPolyfillSupport;
+be?.(L, z), (v.litHtmlVersions ??= []).push("3.3.3");
+var xe = (e, t, n) => {
 	let r = n?.renderBefore ?? t, i = r._$litPart$;
 	if (i === void 0) {
 		let e = n?.renderBefore ?? null;
-		r._$litPart$ = i = new B(t.insertBefore(C(), e), e, void 0, n ?? {});
+		r._$litPart$ = i = new z(t.insertBefore(C(), e), e, void 0, n ?? {});
 	}
 	return i._$AI(e), i;
-}, H = globalThis, U = class extends _ {
+}, V = globalThis, H = class extends _ {
 	constructor() {
 		super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
 	}
@@ -493,7 +493,7 @@ var be = (e, t, n) => {
 	}
 	update(e) {
 		let t = this.render();
-		this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(e), this._$Do = be(t, this.renderRoot, this.renderOptions);
+		this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(e), this._$Do = xe(t, this.renderRoot, this.renderOptions);
 	}
 	connectedCallback() {
 		super.connectedCallback(), this._$Do?.setConnected(!0);
@@ -505,22 +505,22 @@ var be = (e, t, n) => {
 		return N;
 	}
 };
-U._$litElement$ = !0, U.finalized = !0, H.litElementHydrateSupport?.({ LitElement: U });
-var xe = H.litElementPolyfillSupport;
-xe?.({ LitElement: U }), (H.litElementVersions ??= []).push("4.2.2");
+H._$litElement$ = !0, H.finalized = !0, V.litElementHydrateSupport?.({ LitElement: H });
+var Se = V.litElementPolyfillSupport;
+Se?.({ LitElement: H }), (V.litElementVersions ??= []).push("4.2.2");
 //#endregion
 //#region node_modules/@lit/reactive-element/decorators/custom-element.js
-var W = (e) => (t, n) => {
+var U = (e) => (t, n) => {
 	n === void 0 ? customElements.define(e, t) : n.addInitializer(() => {
 		customElements.define(e, t);
 	});
-}, Se = {
+}, Ce = {
 	attribute: !0,
 	type: String,
 	converter: m,
 	reflect: !1,
 	hasChanged: h
-}, Ce = (e = Se, t, n) => {
+}, we = (e = Ce, t, n) => {
 	let { kind: r, metadata: i } = n, a = globalThis.litPropertyMetadata.get(i);
 	if (a === void 0 && globalThis.litPropertyMetadata.set(i, a = /* @__PURE__ */ new Map()), r === "setter" && ((e = Object.create(e)).wrapped = !0), a.set(n.name, e), r === "accessor") {
 		let { name: r } = n;
@@ -543,21 +543,63 @@ var W = (e) => (t, n) => {
 	}
 	throw Error("Unsupported decorator location: " + r);
 };
-function G(e) {
-	return (t, n) => typeof n == "object" ? Ce(e, t, n) : ((e, t, n) => {
+function W(e) {
+	return (t, n) => typeof n == "object" ? we(e, t, n) : ((e, t, n) => {
 		let r = t.hasOwnProperty(n);
 		return t.constructor.createProperty(n, e), r ? Object.getOwnPropertyDescriptor(t, n) : void 0;
 	})(e, t, n);
 }
 //#endregion
 //#region node_modules/@lit/reactive-element/decorators/state.js
-function K(e) {
-	return G({
+function G(e) {
+	return W({
 		...e,
 		state: !0,
 		attribute: !1
 	});
 }
+var K = new class {
+	constructor(e = []) {
+		this.employees = [], this.employees = [...e];
+	}
+	getAll() {
+		return [...this.employees];
+	}
+	getById(e) {
+		return this.employees.find((t) => t.identifier === e);
+	}
+	add(e) {
+		let t = {
+			identifier: this.employees.reduce((e, t) => Math.max(e, t.identifier), 0) + 1,
+			fullName: e.fullName,
+			department: e.department,
+			designation: e.designation || "",
+			emailAddress: e.emailAddress
+		};
+		return this.employees = [...this.employees, t], t;
+	}
+	update(e) {
+		if (this.employees.findIndex((t) => t.identifier === e.identifier) === -1) return null;
+		let t = { ...e };
+		return this.employees = this.employees.map((n) => n.identifier === e.identifier ? t : n), t;
+	}
+	delete(e) {
+		let t = this.employees.find((t) => t.identifier === e);
+		return t ? (this.employees = this.employees.filter((t) => t.identifier !== e), t) : null;
+	}
+	save(e) {
+		return e.identifier === 0 ? {
+			employee: this.add(e),
+			isNew: !0
+		} : {
+			employee: this.update(e) ?? e,
+			isNew: !1
+		};
+	}
+	clear() {
+		this.employees = [];
+	}
+}();
 //#endregion
 //#region \0@oxc-project+runtime@0.146.0/helpers/esm/decorate.js
 function q(e, t, n, r) {
@@ -568,7 +610,7 @@ function q(e, t, n, r) {
 }
 //#endregion
 //#region src/ui/ui-input.ts
-var J = class extends U {
+var J = class extends H {
 	constructor(...e) {
 		super(...e), this.label = "", this.name = "", this.type = "text", this.value = "", this.placeholder = "", this.required = !1, this.errorMessage = "";
 	}
@@ -682,13 +724,13 @@ var J = class extends U {
 		}));
 	}
 };
-q([G({ type: String })], J.prototype, "label", void 0), q([G({ type: String })], J.prototype, "name", void 0), q([G({ type: String })], J.prototype, "type", void 0), q([G({ type: String })], J.prototype, "value", void 0), q([G({ type: String })], J.prototype, "placeholder", void 0), q([G({ type: Boolean })], J.prototype, "required", void 0), q([G({
+q([W({ type: String })], J.prototype, "label", void 0), q([W({ type: String })], J.prototype, "name", void 0), q([W({ type: String })], J.prototype, "type", void 0), q([W({ type: String })], J.prototype, "value", void 0), q([W({ type: String })], J.prototype, "placeholder", void 0), q([W({ type: Boolean })], J.prototype, "required", void 0), q([W({
 	type: String,
 	attribute: "error-message"
-})], J.prototype, "errorMessage", void 0), J = q([W("ui-input")], J);
+})], J.prototype, "errorMessage", void 0), J = q([U("ui-input")], J);
 //#endregion
 //#region src/ui/ui-button.ts
-var Y = class extends U {
+var Y = class extends H {
 	constructor(...e) {
 		super(...e), this.variant = "primary", this.small = !1, this.pill = !1, this.iconOnly = !1, this.disabled = !1;
 	}
@@ -808,13 +850,13 @@ var Y = class extends U {
     `;
 	}
 };
-q([G({ type: String })], Y.prototype, "variant", void 0), q([G({ type: Boolean })], Y.prototype, "small", void 0), q([G({ type: Boolean })], Y.prototype, "pill", void 0), q([G({
+q([W({ type: String })], Y.prototype, "variant", void 0), q([W({ type: Boolean })], Y.prototype, "small", void 0), q([W({ type: Boolean })], Y.prototype, "pill", void 0), q([W({
 	type: Boolean,
 	attribute: "icon-only"
-})], Y.prototype, "iconOnly", void 0), q([G({ type: Boolean })], Y.prototype, "disabled", void 0), Y = q([W("ui-button")], Y);
+})], Y.prototype, "iconOnly", void 0), q([W({ type: Boolean })], Y.prototype, "disabled", void 0), Y = q([U("ui-button")], Y);
 //#endregion
 //#region src/components/employee-form.ts
-var X = class extends U {
+var X = class extends H {
 	constructor(...e) {
 		super(...e), this.employeeToEdit = null, this.draftFullName = "", this.draftDepartment = "", this.draftDesignation = "", this.draftEmailAddress = "", this.errorMessages = {
 			fullName: "",
@@ -1024,12 +1066,138 @@ var X = class extends U {
 		return this.draftFullName.trim() === "" && (t.fullName = "Name is required"), this.draftDepartment.trim() === "" && (t.department = "Department is required"), this.draftEmailAddress.trim() === "" ? t.emailAddress = "Email is required" : e.test(this.draftEmailAddress.trim()) || (t.emailAddress = "Enter a valid email"), this.errorMessages = t, t.fullName === "" && t.department === "" && t.emailAddress === "";
 	}
 };
-q([G({ attribute: !1 })], X.prototype, "employeeToEdit", void 0), q([K()], X.prototype, "draftFullName", void 0), q([K()], X.prototype, "draftDepartment", void 0), q([K()], X.prototype, "draftDesignation", void 0), q([K()], X.prototype, "draftEmailAddress", void 0), q([K()], X.prototype, "errorMessages", void 0), X = q([W("employee-form")], X);
+q([W({ attribute: !1 })], X.prototype, "employeeToEdit", void 0), q([G()], X.prototype, "draftFullName", void 0), q([G()], X.prototype, "draftDepartment", void 0), q([G()], X.prototype, "draftDesignation", void 0), q([G()], X.prototype, "draftEmailAddress", void 0), q([G()], X.prototype, "errorMessages", void 0), X = q([U("employee-form")], X);
+//#endregion
+//#region src/ui/ui-dialog.ts
+var Z = class extends H {
+	constructor(...e) {
+		super(...e), this.open = !1, this.heading = "", this.confirmLabel = "Confirm", this.cancelLabel = "Cancel";
+	}
+	static {
+		this.styles = o`
+    .dialog-backdrop {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background-color: var(--color-backdrop, rgb(0 0 0 / 0.45));
+      z-index: 100;
+    }
+
+    .dialog-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      max-width: 420px;
+      padding: 24px;
+      box-sizing: border-box;
+      background-color: var(--color-surface, #ffffff);
+      border: 1px solid var(--color-border, #e2e8f0);
+      border-radius: 10px;
+    }
+
+    .dialog-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .dialog-heading {
+      margin: 0;
+      font-size: 1.15rem;
+      color: var(--color-text-primary, #111111);
+    }
+
+    .dialog-close-button {
+      border: none;
+      background: none;
+      padding: 4px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      color: var(--color-text-secondary, #64748b);
+    }
+
+    .dialog-body {
+      color: var(--color-text-secondary, #64748b);
+    }
+
+    .dialog-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+  `;
+	}
+	render() {
+		return this.open ? M`
+      <div class="dialog-backdrop" @click=${this.handleCancel}>
+        <div class="dialog-panel" @click=${this.handlePanelClick}>
+          ${this.renderDialogHeader()}
+          <div class="dialog-body"><slot></slot></div>
+          ${this.renderDialogActions()}
+        </div>
+      </div>
+    ` : P;
+	}
+	renderDialogHeader() {
+		return M`
+      <div class="dialog-header">
+        <h2 class="dialog-heading">${this.heading}</h2>
+        <button
+          type="button"
+          class="dialog-close-button"
+          aria-label="Close dialog"
+          @click=${this.handleCancel}
+        >
+          ✕
+        </button>
+      </div>
+    `;
+	}
+	renderDialogActions() {
+		return M`
+      <div class="dialog-actions">
+        <ui-button variant="secondary" @click=${this.handleCancel}>
+          ${this.cancelLabel}
+        </ui-button>
+        <ui-button variant="danger" @click=${this.handleConfirm}>
+          ${this.confirmLabel}
+        </ui-button>
+      </div>
+    `;
+	}
+	handlePanelClick(e) {
+		e.stopPropagation();
+	}
+	handleCancel() {
+		this.dispatchEvent(new CustomEvent("dialog-cancel", {
+			bubbles: !0,
+			composed: !0
+		}));
+	}
+	handleConfirm() {
+		this.dispatchEvent(new CustomEvent("dialog-confirm", {
+			bubbles: !0,
+			composed: !0
+		}));
+	}
+};
+q([W({ type: Boolean })], Z.prototype, "open", void 0), q([W({ type: String })], Z.prototype, "heading", void 0), q([W({
+	type: String,
+	attribute: "confirm-label"
+})], Z.prototype, "confirmLabel", void 0), q([W({
+	type: String,
+	attribute: "cancel-label"
+})], Z.prototype, "cancelLabel", void 0), Z = q([U("ui-dialog")], Z);
 //#endregion
 //#region src/components/employee-table.ts
-var Z = class extends U {
+var Q = class extends H {
 	constructor(...e) {
-		super(...e), this.employees = [], this.searchTerm = "", this.currentPageNumber = 1, this.pageSize = 5;
+		super(...e), this.employees = [], this.searchTerm = "", this.currentPageNumber = 1, this.employeePendingDeletion = null, this.pageSize = 5;
 	}
 	static {
 		this.styles = o`
@@ -1163,6 +1331,7 @@ var Z = class extends U {
 		return M`
       ${this.renderTableToolbar()}
       ${this.renderTableBody(e)}
+      ${this.renderDeleteConfirmationDialog()}
     `;
 	}
 	renderTableToolbar() {
@@ -1374,11 +1543,33 @@ var Z = class extends U {
 		}));
 	}
 	handleDeleteClick(e) {
-		this.dispatchEvent(new CustomEvent("employee-delete-request", {
+		this.employeePendingDeletion = e;
+	}
+	handleDeleteConfirmed() {
+		let e = this.employeePendingDeletion;
+		e !== null && (this.employeePendingDeletion = null, this.dispatchEvent(new CustomEvent("employee-delete", {
 			detail: { employee: e },
 			bubbles: !0,
 			composed: !0
-		}));
+		})));
+	}
+	handleDeleteCancelled() {
+		this.employeePendingDeletion = null;
+	}
+	renderDeleteConfirmationDialog() {
+		return M`
+      <ui-dialog
+        .open=${this.employeePendingDeletion !== null}
+        heading="Delete Employee"
+        confirm-label="Delete"
+        cancel-label="Cancel"
+        @dialog-confirm=${this.handleDeleteConfirmed}
+        @dialog-cancel=${this.handleDeleteCancelled}
+      >
+        Are you sure you want to delete
+        <strong>${this.employeePendingDeletion?.fullName}</strong>?
+      </ui-dialog>
+    `;
 	}
 	handleAddEmployeeClick() {
 		this.dispatchEvent(new CustomEvent("employee-add-request", {
@@ -1387,138 +1578,12 @@ var Z = class extends U {
 		}));
 	}
 };
-q([G({ attribute: !1 })], Z.prototype, "employees", void 0), q([K()], Z.prototype, "searchTerm", void 0), q([K()], Z.prototype, "currentPageNumber", void 0), Z = q([W("employee-table")], Z);
-//#endregion
-//#region src/ui/ui-dialog.ts
-var Q = class extends U {
-	constructor(...e) {
-		super(...e), this.open = !1, this.heading = "", this.confirmLabel = "Confirm", this.cancelLabel = "Cancel";
-	}
-	static {
-		this.styles = o`
-    .dialog-backdrop {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      background-color: var(--color-backdrop, rgb(0 0 0 / 0.45));
-      z-index: 100;
-    }
-
-    .dialog-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      width: 100%;
-      max-width: 420px;
-      padding: 24px;
-      box-sizing: border-box;
-      background-color: var(--color-surface, #ffffff);
-      border: 1px solid var(--color-border, #e2e8f0);
-      border-radius: 10px;
-    }
-
-    .dialog-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .dialog-heading {
-      margin: 0;
-      font-size: 1.15rem;
-      color: var(--color-text-primary, #111111);
-    }
-
-    .dialog-close-button {
-      border: none;
-      background: none;
-      padding: 4px;
-      font-size: 1.1rem;
-      cursor: pointer;
-      color: var(--color-text-secondary, #64748b);
-    }
-
-    .dialog-body {
-      color: var(--color-text-secondary, #64748b);
-    }
-
-    .dialog-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-    }
-  `;
-	}
-	render() {
-		return this.open ? M`
-      <div class="dialog-backdrop" @click=${this.handleCancel}>
-        <div class="dialog-panel" @click=${this.handlePanelClick}>
-          ${this.renderDialogHeader()}
-          <div class="dialog-body"><slot></slot></div>
-          ${this.renderDialogActions()}
-        </div>
-      </div>
-    ` : P;
-	}
-	renderDialogHeader() {
-		return M`
-      <div class="dialog-header">
-        <h2 class="dialog-heading">${this.heading}</h2>
-        <button
-          type="button"
-          class="dialog-close-button"
-          aria-label="Close dialog"
-          @click=${this.handleCancel}
-        >
-          ✕
-        </button>
-      </div>
-    `;
-	}
-	renderDialogActions() {
-		return M`
-      <div class="dialog-actions">
-        <ui-button variant="secondary" @click=${this.handleCancel}>
-          ${this.cancelLabel}
-        </ui-button>
-        <ui-button variant="danger" @click=${this.handleConfirm}>
-          ${this.confirmLabel}
-        </ui-button>
-      </div>
-    `;
-	}
-	handlePanelClick(e) {
-		e.stopPropagation();
-	}
-	handleCancel() {
-		this.dispatchEvent(new CustomEvent("dialog-cancel", {
-			bubbles: !0,
-			composed: !0
-		}));
-	}
-	handleConfirm() {
-		this.dispatchEvent(new CustomEvent("dialog-confirm", {
-			bubbles: !0,
-			composed: !0
-		}));
-	}
-};
-q([G({ type: Boolean })], Q.prototype, "open", void 0), q([G({ type: String })], Q.prototype, "heading", void 0), q([G({
-	type: String,
-	attribute: "confirm-label"
-})], Q.prototype, "confirmLabel", void 0), q([G({
-	type: String,
-	attribute: "cancel-label"
-})], Q.prototype, "cancelLabel", void 0), Q = q([W("ui-dialog")], Q);
+q([W({ attribute: !1 })], Q.prototype, "employees", void 0), q([G()], Q.prototype, "searchTerm", void 0), q([G()], Q.prototype, "currentPageNumber", void 0), q([G()], Q.prototype, "employeePendingDeletion", void 0), Q = q([U("employee-table")], Q);
 //#endregion
 //#region src/employee-app.ts
-var $ = class extends U {
+var $ = class extends H {
 	constructor(...e) {
-		super(...e), this.employeeList = [], this.employeeSelectedForEdit = null, this.employeePendingDeletion = null, this.toastMessage = "", this.lastEmittedEventName = "";
+		super(...e), this.employeeList = [], this.employeeSelectedForEdit = null, this.toastMessage = "", this.lastEmittedEventName = "";
 	}
 	static {
 		this.styles = o`
@@ -1621,6 +1686,9 @@ var $ = class extends U {
     }
   `;
 	}
+	connectedCallback() {
+		super.connectedCallback(), this.refreshEmployeeList();
+	}
 	render() {
 		return M`
       ${this.renderToast()}
@@ -1628,7 +1696,6 @@ var $ = class extends U {
       ${this.renderFormCard()}
       ${this.renderTableCard()}
       ${this.renderEventsStrip()}
-      ${this.renderDeleteConfirmationDialog()}
     `;
 	}
 	renderApplicationHeader() {
@@ -1661,7 +1728,7 @@ var $ = class extends U {
         <employee-table
           .employees=${this.employeeList}
           @employee-edit-request=${this.handleEmployeeEditRequest}
-          @employee-delete-request=${this.handleEmployeeDeleteRequest}
+          @employee-delete=${this.handleEmployeeDelete}
           @employee-add-request=${this.handleAddEmployeeRequest}
         ></employee-table>
       </section>
@@ -1677,21 +1744,6 @@ var $ = class extends U {
               Last event: ${this.lastEmittedEventName}
             </span>`}
       </footer>
-    `;
-	}
-	renderDeleteConfirmationDialog() {
-		return M`
-      <ui-dialog
-        .open=${this.employeePendingDeletion !== null}
-        heading="Delete Employee"
-        confirm-label="Delete"
-        cancel-label="Cancel"
-        @dialog-confirm=${this.handleDeleteConfirmed}
-        @dialog-cancel=${this.handleDeleteCancelled}
-      >
-        Are you sure you want to delete
-        <strong>${this.employeePendingDeletion?.fullName}</strong>?
-      </ui-dialog>
     `;
 	}
 	renderToast() {
@@ -1711,34 +1763,24 @@ var $ = class extends U {
     `;
 	}
 	handleEmployeeSave(e) {
-		let t = e.detail.employee;
-		if (t.identifier === 0) {
-			let e = this.employeeList.reduce((e, t) => Math.max(e, t.identifier), 0) + 1, n = {
-				...t,
-				identifier: e
-			};
-			this.employeeList = [...this.employeeList, n], this.showToast("Employee added successfully!"), this.emitDomainEvent("employee-added", n);
-		} else this.employeeList = this.employeeList.map((e) => e.identifier === t.identifier ? t : e), this.showToast("Employee updated successfully!"), this.emitDomainEvent("employee-updated", t);
-		this.employeeSelectedForEdit = null;
+		let { employee: t, isNew: n } = K.save(e.detail.employee);
+		this.refreshEmployeeList(), this.showToast(n ? "Employee added successfully!" : "Employee updated successfully!"), this.emitDomainEvent(n ? "employee-added" : "employee-updated", t), this.employeeSelectedForEdit = null;
 	}
-	handleFormCleared() {
-		this.employeeSelectedForEdit = null;
+	handleEmployeeDelete(e) {
+		let t = K.delete(e.detail.employee.identifier);
+		t !== null && (this.refreshEmployeeList(), this.employeeSelectedForEdit?.identifier === t.identifier && (this.employeeSelectedForEdit = null), this.showToast("Employee deleted successfully!"), this.emitDomainEvent("employee-deleted", t));
 	}
 	handleEmployeeEditRequest(e) {
 		this.employeeSelectedForEdit = e.detail.employee, this.scrollFormIntoView();
 	}
-	handleEmployeeDeleteRequest(e) {
-		this.employeePendingDeletion = e.detail.employee;
-	}
-	handleDeleteConfirmed() {
-		let e = this.employeePendingDeletion;
-		e !== null && (this.employeeList = this.employeeList.filter((t) => t.identifier !== e.identifier), this.employeeSelectedForEdit?.identifier === e.identifier && (this.employeeSelectedForEdit = null), this.employeePendingDeletion = null, this.showToast("Employee deleted successfully!"), this.emitDomainEvent("employee-deleted", e));
-	}
-	handleDeleteCancelled() {
-		this.employeePendingDeletion = null;
+	handleFormCleared() {
+		this.employeeSelectedForEdit = null;
 	}
 	handleAddEmployeeRequest() {
 		this.employeeSelectedForEdit = null, this.scrollFormIntoView();
+	}
+	refreshEmployeeList() {
+		this.employeeList = K.getAll();
 	}
 	handleToastClose() {
 		this.toastMessage = "", window.clearTimeout(this.toastTimeoutIdentifier);
@@ -1762,6 +1804,6 @@ var $ = class extends U {
 		}));
 	}
 };
-q([K()], $.prototype, "employeeList", void 0), q([K()], $.prototype, "employeeSelectedForEdit", void 0), q([K()], $.prototype, "employeePendingDeletion", void 0), q([K()], $.prototype, "toastMessage", void 0), q([K()], $.prototype, "lastEmittedEventName", void 0), $ = q([W("employee-app")], $);
+q([G()], $.prototype, "employeeList", void 0), q([G()], $.prototype, "employeeSelectedForEdit", void 0), q([G()], $.prototype, "toastMessage", void 0), q([G()], $.prototype, "lastEmittedEventName", void 0), $ = q([U("employee-app")], $);
 //#endregion
 export { $ as EmployeeApp };

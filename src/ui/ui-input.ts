@@ -25,7 +25,7 @@ export class UiInput extends LitElement {
   @property({ type: String, attribute: 'error-message' })
   errorMessage = '';
 
-  static styles = css`
+  static readonly styles = css`
     :host {
       display: flex;
       flex-direction: column;

@@ -4,6 +4,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import type { Employee } from '../types/employee';
 import '../ui/ui-input';
 import '../ui/ui-button';
+import '../ui/ui-dialog';
 
 @customElement('employee-table')
 export class EmployeeTable extends LitElement {
@@ -16,9 +17,12 @@ export class EmployeeTable extends LitElement {
   @state()
   private currentPageNumber = 1;
 
+  @state()
+  private employeePendingDeletion: Employee | null = null;
+
   private readonly pageSize = 5;
 
-  static styles = css`
+  static readonly styles = css`
     :host {
       display: flex;
       flex-direction: column;
@@ -149,6 +153,7 @@ export class EmployeeTable extends LitElement {
     return html`
       ${this.renderTableToolbar()}
       ${this.renderTableBody(filteredEmployees)}
+      ${this.renderDeleteConfirmationDialog()}
     `;
   }
 
@@ -425,13 +430,42 @@ export class EmployeeTable extends LitElement {
   }
 
   private handleDeleteClick(employee: Employee): void {
+    this.employeePendingDeletion = employee;
+  }
+
+  private handleDeleteConfirmed(): void {
+    const employeeToDelete = this.employeePendingDeletion;
+    if (employeeToDelete === null) {
+      return;
+    }
+    this.employeePendingDeletion = null;
     this.dispatchEvent(
-      new CustomEvent<{ employee: Employee }>('employee-delete-request', {
-        detail: { employee },
+      new CustomEvent<{ employee: Employee }>('employee-delete', {
+        detail: { employee: employeeToDelete },
         bubbles: true,
         composed: true,
       }),
     );
+  }
+
+  private handleDeleteCancelled(): void {
+    this.employeePendingDeletion = null;
+  }
+
+  private renderDeleteConfirmationDialog(): TemplateResult {
+    return html`
+      <ui-dialog
+        .open=${this.employeePendingDeletion !== null}
+        heading="Delete Employee"
+        confirm-label="Delete"
+        cancel-label="Cancel"
+        @dialog-confirm=${this.handleDeleteConfirmed}
+        @dialog-cancel=${this.handleDeleteCancelled}
+      >
+        Are you sure you want to delete
+        <strong>${this.employeePendingDeletion?.fullName}</strong>?
+      </ui-dialog>
+    `;
   }
 
   private handleAddEmployeeClick(): void {

@@ -2,9 +2,9 @@ import { LitElement, css, html, nothing } from 'lit';
 import type { TemplateResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import type { Employee } from './types/employee';
+import { employeeService } from './services/employee-service';
 import './components/employee-form';
 import './components/employee-table';
-import './ui/ui-dialog';
 import './ui/ui-button';
 
 @customElement('employee-app')
@@ -16,9 +16,6 @@ export class EmployeeApp extends LitElement {
   private employeeSelectedForEdit: Employee | null = null;
 
   @state()
-  private employeePendingDeletion: Employee | null = null;
-
-  @state()
   private toastMessage = '';
 
   @state()
@@ -26,7 +23,7 @@ export class EmployeeApp extends LitElement {
 
   private toastTimeoutIdentifier: number | undefined;
 
-  static styles = css`
+  static readonly styles = css`
     :host {
       display: flex;
       flex-direction: column;
@@ -126,6 +123,11 @@ export class EmployeeApp extends LitElement {
     }
   `;
 
+  connectedCallback(): void {
+    super.connectedCallback();
+    this.refreshEmployeeList();
+  }
+
   render(): TemplateResult {
     return html`
       ${this.renderToast()}
@@ -133,7 +135,6 @@ export class EmployeeApp extends LitElement {
       ${this.renderFormCard()}
       ${this.renderTableCard()}
       ${this.renderEventsStrip()}
-      ${this.renderDeleteConfirmationDialog()}
     `;
   }
 
@@ -169,7 +170,7 @@ export class EmployeeApp extends LitElement {
         <employee-table
           .employees=${this.employeeList}
           @employee-edit-request=${this.handleEmployeeEditRequest}
-          @employee-delete-request=${this.handleEmployeeDeleteRequest}
+          @employee-delete=${this.handleEmployeeDelete}
           @employee-add-request=${this.handleAddEmployeeRequest}
         ></employee-table>
       </section>
@@ -188,22 +189,6 @@ export class EmployeeApp extends LitElement {
               Last event: ${this.lastEmittedEventName}
             </span>`}
       </footer>
-    `;
-  }
-
-  private renderDeleteConfirmationDialog(): TemplateResult {
-    return html`
-      <ui-dialog
-        .open=${this.employeePendingDeletion !== null}
-        heading="Delete Employee"
-        confirm-label="Delete"
-        cancel-label="Cancel"
-        @dialog-confirm=${this.handleDeleteConfirmed}
-        @dialog-cancel=${this.handleDeleteCancelled}
-      >
-        Are you sure you want to delete
-        <strong>${this.employeePendingDeletion?.fullName}</strong>?
-      </ui-dialog>
     `;
   }
 
@@ -228,32 +213,36 @@ export class EmployeeApp extends LitElement {
   }
 
   private handleEmployeeSave(event: CustomEvent<{ employee: Employee }>): void {
-    const employee = event.detail.employee;
-    if (employee.identifier === 0) {
-      const nextIdentifier =
-        this.employeeList.reduce(
-          (maximum, existing) => Math.max(maximum, existing.identifier),
-          0,
-        ) + 1;
-      const createdEmployee: Employee = {
-        ...employee,
-        identifier: nextIdentifier,
-      };
-      this.employeeList = [...this.employeeList, createdEmployee];
-      this.showToast('Employee added successfully!');
-      this.emitDomainEvent('employee-added', createdEmployee);
-    } else {
-      this.employeeList = this.employeeList.map((existing) =>
-        existing.identifier === employee.identifier ? employee : existing,
-      );
-      this.showToast('Employee updated successfully!');
-      this.emitDomainEvent('employee-updated', employee);
-    }
+    const { employee, isNew } = employeeService.save(event.detail.employee);
+    this.refreshEmployeeList();
+    this.showToast(
+      isNew
+        ? 'Employee added successfully!'
+        : 'Employee updated successfully!',
+    );
+    this.emitDomainEvent(
+      isNew ? 'employee-added' : 'employee-updated',
+      employee,
+    );
     this.employeeSelectedForEdit = null;
   }
 
-  private handleFormCleared(): void {
-    this.employeeSelectedForEdit = null;
+  private handleEmployeeDelete(
+    event: CustomEvent<{ employee: Employee }>,
+  ): void {
+    const deletedEmployee = employeeService.delete(
+      event.detail.employee.identifier,
+    );
+    if (deletedEmployee !== null) {
+      this.refreshEmployeeList();
+      if (
+        this.employeeSelectedForEdit?.identifier === deletedEmployee.identifier
+      ) {
+        this.employeeSelectedForEdit = null;
+      }
+      this.showToast('Employee deleted successfully!');
+      this.emitDomainEvent('employee-deleted', deletedEmployee);
+    }
   }
 
   private handleEmployeeEditRequest(
@@ -263,37 +252,17 @@ export class EmployeeApp extends LitElement {
     this.scrollFormIntoView();
   }
 
-  private handleEmployeeDeleteRequest(
-    event: CustomEvent<{ employee: Employee }>,
-  ): void {
-    this.employeePendingDeletion = event.detail.employee;
-  }
-
-  private handleDeleteConfirmed(): void {
-    const employeeToDelete = this.employeePendingDeletion;
-    if (employeeToDelete === null) {
-      return;
-    }
-    this.employeeList = this.employeeList.filter(
-      (existing) => existing.identifier !== employeeToDelete.identifier,
-    );
-    if (
-      this.employeeSelectedForEdit?.identifier === employeeToDelete.identifier
-    ) {
-      this.employeeSelectedForEdit = null;
-    }
-    this.employeePendingDeletion = null;
-    this.showToast('Employee deleted successfully!');
-    this.emitDomainEvent('employee-deleted', employeeToDelete);
-  }
-
-  private handleDeleteCancelled(): void {
-    this.employeePendingDeletion = null;
+  private handleFormCleared(): void {
+    this.employeeSelectedForEdit = null;
   }
 
   private handleAddEmployeeRequest(): void {
     this.employeeSelectedForEdit = null;
     this.scrollFormIntoView();
+  }
+
+  private refreshEmployeeList(): void {
+    this.employeeList = employeeService.getAll();
   }
 
   private handleToastClose(): void {

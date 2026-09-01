@@ -17,7 +17,7 @@ export class UiDialog extends LitElement {
   @property({ type: String, attribute: 'cancel-label' })
   cancelLabel = 'Cancel';
 
-  static styles = css`
+  static readonly styles = css`
     .dialog-backdrop {
       position: fixed;
       inset: 0;

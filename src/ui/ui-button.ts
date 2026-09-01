@@ -27,7 +27,7 @@ export class UiButton extends LitElement {
   @property({ type: Boolean })
   disabled = false;
 
-  static styles = css`
+  static readonly styles = css`
     :host {
       display: inline-flex;
     }

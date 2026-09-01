@@ -35,7 +35,7 @@ export class EmployeeForm extends LitElement {
     emailAddress: '',
   };
 
-  static styles = css`
+  static readonly styles = css`
     :host {
       display: flex;
       flex-direction: column;
