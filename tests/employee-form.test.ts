@@ -208,7 +208,7 @@ describe('EmployeeForm Component & Validation Logic', () => {
       await formElement.updateComplete;
 
       expect(emittedEmployee).toBeDefined();
-      expect(emittedEmployee?.identifier).toBe(0);
+      expect(emittedEmployee?.identifier).toBeGreaterThan(0);
       expect(emittedEmployee?.fullName).toBe('Jane Doe');
       expect(emittedEmployee?.department).toBe('Product');
       expect(emittedEmployee?.designation).toBe('Lead Designer');

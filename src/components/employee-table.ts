@@ -2,6 +2,7 @@ import { LitElement, css, html } from 'lit';
 import type { TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import type { Employee } from '../types/employee';
+import { employeeService } from '../services/employee-service';
 import '../ui/ui-input';
 import '../ui/ui-button';
 import '../ui/ui-dialog';
@@ -9,7 +10,10 @@ import '../ui/ui-dialog';
 @customElement('employee-table')
 export class EmployeeTable extends LitElement {
   @property({ attribute: false })
-  employees: Employee[] = [];
+  employees: Employee[] | null = null;
+
+  @state()
+  private serviceEmployees: Employee[] = [];
 
   @state()
   private searchTerm = '';
@@ -21,6 +25,7 @@ export class EmployeeTable extends LitElement {
   private employeePendingDeletion: Employee | null = null;
 
   private readonly pageSize = 5;
+  private unsubscribeService?: () => void;
 
   static readonly styles = css`
     :host {
@@ -148,6 +153,24 @@ export class EmployeeTable extends LitElement {
     }
   `;
 
+  connectedCallback(): void {
+    super.connectedCallback();
+    this.unsubscribeService = employeeService.subscribe((list) => {
+      this.serviceEmployees = list;
+    });
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    if (this.unsubscribeService) {
+      this.unsubscribeService();
+    }
+  }
+
+  private get activeEmployees(): Employee[] {
+    return this.employees !== null ? this.employees : this.serviceEmployees;
+  }
+
   render(): TemplateResult {
     const filteredEmployees = this.computeFilteredEmployees();
     return html`
@@ -174,7 +197,7 @@ export class EmployeeTable extends LitElement {
   }
 
   private renderTableBody(filteredEmployees: Employee[]): TemplateResult {
-    if (this.employees.length === 0) {
+    if (this.activeEmployees.length === 0) {
       return this.renderEmptyState();
     }
     if (filteredEmployees.length === 0) {
@@ -387,9 +410,9 @@ export class EmployeeTable extends LitElement {
   private computeFilteredEmployees(): Employee[] {
     const normalizedSearchTerm = this.searchTerm.trim().toLowerCase();
     if (normalizedSearchTerm === '') {
-      return this.employees;
+      return this.activeEmployees;
     }
-    return this.employees.filter((employee) => {
+    return this.activeEmployees.filter((employee) => {
       return (
         employee.fullName.toLowerCase().includes(normalizedSearchTerm) ||
         employee.department.toLowerCase().includes(normalizedSearchTerm) ||
@@ -439,8 +462,16 @@ export class EmployeeTable extends LitElement {
       return;
     }
     this.employeePendingDeletion = null;
+    employeeService.delete(employeeToDelete.identifier);
     this.dispatchEvent(
       new CustomEvent<{ employee: Employee }>('employee-delete', {
+        detail: { employee: employeeToDelete },
+        bubbles: true,
+        composed: true,
+      }),
+    );
+    this.dispatchEvent(
+      new CustomEvent<{ employee: Employee }>('employee-deleted', {
         detail: { employee: employeeToDelete },
         bubbles: true,
         composed: true,

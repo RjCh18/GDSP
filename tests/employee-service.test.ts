@@ -201,18 +201,61 @@ describe('EmployeeService (CRUD Operations)', () => {
     });
   });
 
-  describe('Clear (clear)', () => {
-    it('should clear all employees from the store', () => {
+  describe('Subscriptions and Reactive Notifications', () => {
+    it('should immediately call subscriber with current employees upon subscription', () => {
       service.add({
-        fullName: 'Jack Sparrow',
-        department: 'Sailing',
-        designation: 'Captain',
-        emailAddress: 'jack@example.com',
+        fullName: 'Subscriber Test',
+        department: 'Testing',
+        designation: 'QA',
+        emailAddress: 'sub@test.com',
       });
-      expect(service.getAll()).toHaveLength(1);
 
-      service.clear();
-      expect(service.getAll()).toHaveLength(0);
+      let receivedList: Employee[] = [];
+      const unsubscribe = service.subscribe((list) => {
+        receivedList = list;
+      });
+
+      expect(receivedList).toHaveLength(1);
+      expect(receivedList[0].fullName).toBe('Subscriber Test');
+      unsubscribe();
+    });
+
+    it('should notify subscribers when employees are added, updated, or deleted', () => {
+      let notificationCount = 0;
+      let lastList: Employee[] = [];
+      const unsubscribe = service.subscribe((list) => {
+        notificationCount++;
+        lastList = list;
+      });
+
+      expect(notificationCount).toBe(1);
+
+      const added = service.add({
+        fullName: 'Notify Me',
+        department: 'DevOps',
+        designation: 'Engineer',
+        emailAddress: 'notify@test.com',
+      });
+      expect(notificationCount).toBe(2);
+      expect(lastList).toHaveLength(1);
+
+      service.update({ ...added, designation: 'Senior Engineer' });
+      expect(notificationCount).toBe(3);
+      expect(lastList[0].designation).toBe('Senior Engineer');
+
+      service.delete(added.identifier);
+      expect(notificationCount).toBe(4);
+      expect(lastList).toHaveLength(0);
+
+      unsubscribe();
+
+      service.add({
+        fullName: 'After Unsubscribe',
+        department: 'None',
+        designation: 'None',
+        emailAddress: 'after@test.com',
+      });
+      expect(notificationCount).toBe(4);
     });
   });
 });

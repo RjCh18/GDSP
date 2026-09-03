@@ -2,6 +2,7 @@ import { LitElement, css, html } from 'lit';
 import type { PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import type { Employee } from '../types/employee';
+import { employeeService } from '../services/employee-service';
 import '../ui/ui-input';
 import '../ui/ui-button';
 
@@ -224,13 +225,14 @@ export class EmployeeForm extends LitElement {
     if (!this.validateForm()) {
       return;
     }
-    const employee: Employee = {
+    const employeeData: Employee = {
       identifier: this.employeeToEdit === null ? 0 : this.employeeToEdit.identifier,
       fullName: this.draftFullName.trim(),
       department: this.draftDepartment.trim(),
       designation: this.draftDesignation.trim(),
       emailAddress: this.draftEmailAddress.trim(),
     };
+    const { employee, isNew } = employeeService.save(employeeData);
     this.dispatchEvent(
       new CustomEvent<{ employee: Employee }>('employee-save', {
         detail: { employee },
@@ -238,6 +240,17 @@ export class EmployeeForm extends LitElement {
         composed: true,
       }),
     );
+    this.dispatchEvent(
+      new CustomEvent<{ employee: Employee }>(
+        isNew ? 'employee-added' : 'employee-updated',
+        {
+          detail: { employee },
+          bubbles: true,
+          composed: true,
+        },
+      ),
+    );
+    this.employeeToEdit = null;
     this.clearFormFields();
   }
 

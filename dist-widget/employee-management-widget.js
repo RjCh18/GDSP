@@ -560,7 +560,16 @@ function G(e) {
 }
 var K = new class {
 	constructor(e = []) {
-		this.employees = [], this.employees = [...e];
+		this.employees = [], this.listeners = /* @__PURE__ */ new Set(), this.employees = [...e];
+	}
+	subscribe(e) {
+		return this.listeners.add(e), e(this.getAll()), () => {
+			this.listeners.delete(e);
+		};
+	}
+	notify() {
+		let e = this.getAll();
+		for (let t of this.listeners) t(e);
 	}
 	getAll() {
 		return [...this.employees];
@@ -576,16 +585,16 @@ var K = new class {
 			designation: e.designation || "",
 			emailAddress: e.emailAddress
 		};
-		return this.employees = [...this.employees, t], t;
+		return this.employees = [...this.employees, t], this.notify(), t;
 	}
 	update(e) {
 		if (this.employees.findIndex((t) => t.identifier === e.identifier) === -1) return null;
 		let t = { ...e };
-		return this.employees = this.employees.map((n) => n.identifier === e.identifier ? t : n), t;
+		return this.employees = this.employees.map((n) => n.identifier === e.identifier ? t : n), this.notify(), t;
 	}
 	delete(e) {
 		let t = this.employees.find((t) => t.identifier === e);
-		return t ? (this.employees = this.employees.filter((t) => t.identifier !== e), t) : null;
+		return t ? (this.employees = this.employees.filter((t) => t.identifier !== e), this.notify(), t) : null;
 	}
 	save(e) {
 		return e.identifier === 0 ? {
@@ -597,7 +606,7 @@ var K = new class {
 		};
 	}
 	clear() {
-		this.employees = [];
+		this.employees = [], this.notify();
 	}
 }();
 //#endregion
@@ -1037,12 +1046,16 @@ var X = class extends H {
 			department: this.draftDepartment.trim(),
 			designation: this.draftDesignation.trim(),
 			emailAddress: this.draftEmailAddress.trim()
-		};
+		}, { employee: t, isNew: n } = K.save(e);
 		this.dispatchEvent(new CustomEvent("employee-save", {
-			detail: { employee: e },
+			detail: { employee: t },
 			bubbles: !0,
 			composed: !0
-		})), this.clearFormFields();
+		})), this.dispatchEvent(new CustomEvent(n ? "employee-added" : "employee-updated", {
+			detail: { employee: t },
+			bubbles: !0,
+			composed: !0
+		})), this.employeeToEdit = null, this.clearFormFields();
 	}
 	handleClearClick() {
 		this.clearFormFields(), this.dispatchEvent(new CustomEvent("form-cleared", {
@@ -1197,7 +1210,7 @@ q([W({ type: Boolean })], Z.prototype, "open", void 0), q([W({ type: String })],
 //#region src/components/employee-table.ts
 var Q = class extends H {
 	constructor(...e) {
-		super(...e), this.employees = [], this.searchTerm = "", this.currentPageNumber = 1, this.employeePendingDeletion = null, this.pageSize = 5;
+		super(...e), this.employees = null, this.serviceEmployees = [], this.searchTerm = "", this.currentPageNumber = 1, this.employeePendingDeletion = null, this.pageSize = 5;
 	}
 	static {
 		this.styles = o`
@@ -1326,6 +1339,17 @@ var Q = class extends H {
     }
   `;
 	}
+	connectedCallback() {
+		super.connectedCallback(), this.unsubscribeService = K.subscribe((e) => {
+			this.serviceEmployees = e;
+		});
+	}
+	disconnectedCallback() {
+		super.disconnectedCallback(), this.unsubscribeService && this.unsubscribeService();
+	}
+	get activeEmployees() {
+		return this.employees === null ? this.serviceEmployees : this.employees;
+	}
 	render() {
 		let e = this.computeFilteredEmployees();
 		return M`
@@ -1350,7 +1374,7 @@ var Q = class extends H {
     `;
 	}
 	renderTableBody(e) {
-		if (this.employees.length === 0) return this.renderEmptyState();
+		if (this.activeEmployees.length === 0) return this.renderEmptyState();
 		if (e.length === 0) return this.renderNoSearchMatches();
 		let t = Math.max(1, Math.ceil(e.length / this.pageSize)), n = Math.min(this.currentPageNumber, t), r = (n - 1) * this.pageSize, i = e.slice(r, r + this.pageSize);
 		return M`
@@ -1524,7 +1548,7 @@ var Q = class extends H {
 	}
 	computeFilteredEmployees() {
 		let e = this.searchTerm.trim().toLowerCase();
-		return e === "" ? this.employees : this.employees.filter((t) => t.fullName.toLowerCase().includes(e) || t.department.toLowerCase().includes(e) || t.designation.toLowerCase().includes(e) || t.emailAddress.toLowerCase().includes(e));
+		return e === "" ? this.activeEmployees : this.activeEmployees.filter((t) => t.fullName.toLowerCase().includes(e) || t.department.toLowerCase().includes(e) || t.designation.toLowerCase().includes(e) || t.emailAddress.toLowerCase().includes(e));
 	}
 	computeInitials(e) {
 		return e.split(" ").filter((e) => e !== "").slice(0, 2).map((e) => e[0].toUpperCase()).join("");
@@ -1547,7 +1571,11 @@ var Q = class extends H {
 	}
 	handleDeleteConfirmed() {
 		let e = this.employeePendingDeletion;
-		e !== null && (this.employeePendingDeletion = null, this.dispatchEvent(new CustomEvent("employee-delete", {
+		e !== null && (this.employeePendingDeletion = null, K.delete(e.identifier), this.dispatchEvent(new CustomEvent("employee-delete", {
+			detail: { employee: e },
+			bubbles: !0,
+			composed: !0
+		})), this.dispatchEvent(new CustomEvent("employee-deleted", {
 			detail: { employee: e },
 			bubbles: !0,
 			composed: !0
@@ -1578,12 +1606,12 @@ var Q = class extends H {
 		}));
 	}
 };
-q([W({ attribute: !1 })], Q.prototype, "employees", void 0), q([G()], Q.prototype, "searchTerm", void 0), q([G()], Q.prototype, "currentPageNumber", void 0), q([G()], Q.prototype, "employeePendingDeletion", void 0), Q = q([U("employee-table")], Q);
+q([W({ attribute: !1 })], Q.prototype, "employees", void 0), q([G()], Q.prototype, "serviceEmployees", void 0), q([G()], Q.prototype, "searchTerm", void 0), q([G()], Q.prototype, "currentPageNumber", void 0), q([G()], Q.prototype, "employeePendingDeletion", void 0), Q = q([U("employee-table")], Q);
 //#endregion
-//#region src/employee-app.ts
+//#region src/app-shell.ts
 var $ = class extends H {
 	constructor(...e) {
-		super(...e), this.employeeList = [], this.employeeSelectedForEdit = null, this.toastMessage = "", this.lastEmittedEventName = "";
+		super(...e), this.toastMessage = "", this.lastEmittedEventName = "";
 	}
 	static {
 		this.styles = o`
@@ -1686,9 +1714,6 @@ var $ = class extends H {
     }
   `;
 	}
-	connectedCallback() {
-		super.connectedCallback(), this.refreshEmployeeList();
-	}
 	render() {
 		return M`
       ${this.renderToast()}
@@ -1715,8 +1740,8 @@ var $ = class extends H {
 		return M`
       <section class="content-card">
         <employee-form
-          .employeeToEdit=${this.employeeSelectedForEdit}
-          @employee-save=${this.handleEmployeeSave}
+          @employee-added=${this.handleEmployeeAdded}
+          @employee-updated=${this.handleEmployeeUpdated}
           @form-cleared=${this.handleFormCleared}
         ></employee-form>
       </section>
@@ -1726,9 +1751,8 @@ var $ = class extends H {
 		return M`
       <section class="content-card">
         <employee-table
-          .employees=${this.employeeList}
           @employee-edit-request=${this.handleEmployeeEditRequest}
-          @employee-delete=${this.handleEmployeeDelete}
+          @employee-deleted=${this.handleEmployeeDeleted}
           @employee-add-request=${this.handleAddEmployeeRequest}
         ></employee-table>
       </section>
@@ -1762,31 +1786,37 @@ var $ = class extends H {
       </div>
     `;
 	}
-	handleEmployeeSave(e) {
-		let { employee: t, isNew: n } = K.save(e.detail.employee);
-		this.refreshEmployeeList(), this.showToast(n ? "Employee added successfully!" : "Employee updated successfully!"), this.emitDomainEvent(n ? "employee-added" : "employee-updated", t), this.employeeSelectedForEdit = null;
+	handleEmployeeAdded(e) {
+		this.lastEmittedEventName = "employee-added", this.showToast("Employee added successfully!");
 	}
-	handleEmployeeDelete(e) {
-		let t = K.delete(e.detail.employee.identifier);
-		t !== null && (this.refreshEmployeeList(), this.employeeSelectedForEdit?.identifier === t.identifier && (this.employeeSelectedForEdit = null), this.showToast("Employee deleted successfully!"), this.emitDomainEvent("employee-deleted", t));
+	handleEmployeeUpdated(e) {
+		this.lastEmittedEventName = "employee-updated", this.showToast("Employee updated successfully!");
+	}
+	handleEmployeeDeleted(e) {
+		this.lastEmittedEventName = "employee-deleted";
+		let t = this.getFormElement();
+		t && t.employeeToEdit?.identifier === e.detail.employee.identifier && (t.employeeToEdit = null), this.showToast("Employee deleted successfully!");
 	}
 	handleEmployeeEditRequest(e) {
-		this.employeeSelectedForEdit = e.detail.employee, this.scrollFormIntoView();
+		let t = this.getFormElement();
+		t && (t.employeeToEdit = e.detail.employee), this.scrollFormIntoView();
 	}
 	handleFormCleared() {
-		this.employeeSelectedForEdit = null;
+		let e = this.getFormElement();
+		e && (e.employeeToEdit = null);
 	}
 	handleAddEmployeeRequest() {
-		this.employeeSelectedForEdit = null, this.scrollFormIntoView();
+		let e = this.getFormElement();
+		e && (e.employeeToEdit = null), this.scrollFormIntoView();
 	}
-	refreshEmployeeList() {
-		this.employeeList = K.getAll();
+	getFormElement() {
+		return this.renderRoot.querySelector("employee-form");
 	}
 	handleToastClose() {
 		this.toastMessage = "", window.clearTimeout(this.toastTimeoutIdentifier);
 	}
 	scrollFormIntoView() {
-		this.renderRoot.querySelector("employee-form")?.scrollIntoView({
+		this.getFormElement()?.scrollIntoView({
 			behavior: "smooth",
 			block: "start"
 		});
@@ -1796,14 +1826,9 @@ var $ = class extends H {
 			this.toastMessage = "";
 		}, 3e3);
 	}
-	emitDomainEvent(e, t) {
-		this.lastEmittedEventName = e, this.dispatchEvent(new CustomEvent(e, {
-			detail: { employee: t },
-			bubbles: !0,
-			composed: !0
-		}));
-	}
 };
-q([G()], $.prototype, "employeeList", void 0), q([G()], $.prototype, "employeeSelectedForEdit", void 0), q([G()], $.prototype, "toastMessage", void 0), q([G()], $.prototype, "lastEmittedEventName", void 0), $ = q([U("employee-app")], $);
 //#endregion
-export { $ as EmployeeApp };
+//#region src/employee-app.ts
+q([G()], $.prototype, "toastMessage", void 0), q([G()], $.prototype, "lastEmittedEventName", void 0), $ = q([U("app-shell")], $), customElements.get("employee-app") || customElements.define("employee-app", class extends $ {});
+//#endregion
+export { $ as AppShell, $ as EmployeeApp };
