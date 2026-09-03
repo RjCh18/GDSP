@@ -82,7 +82,7 @@ describe('EmployeeService (CRUD Operations)', () => {
       });
 
       expect(result.isNew).toBe(true);
-      expect(result.employee.identifier).toBe(1);
+      expect(result.employee.identifier).toBe(0);
       expect(result.employee.fullName).toBe('Diana Prince');
       expect(service.getAll()).toHaveLength(1);
     });
@@ -256,6 +256,61 @@ describe('EmployeeService (CRUD Operations)', () => {
         emailAddress: 'after@test.com',
       });
       expect(notificationCount).toBe(4);
+    });
+  });
+
+  describe('Identifier 0 Support', () => {
+    it('should support employee with identifier 0 as a valid existing employee', () => {
+      const emp0 = service.add({
+        identifier: 0,
+        fullName: 'Founder Zero',
+        department: 'Executive',
+        designation: 'Founder',
+        emailAddress: 'founder@example.com',
+      });
+
+      expect(emp0.identifier).toBe(0);
+      expect(service.getById(0)).toEqual(emp0);
+
+      // Next added employee should auto-increment to 1
+      const emp1 = service.add({
+        fullName: 'Next Person',
+        department: 'Eng',
+        designation: 'Dev',
+        emailAddress: 'next@example.com',
+      });
+      expect(emp1.identifier).toBe(1);
+
+      // Update employee with identifier 0
+      const updatedEmp0 = service.update({
+        identifier: 0,
+        fullName: 'Founder Zero (Updated)',
+        department: 'Executive',
+        designation: 'Chairman',
+        emailAddress: 'chairman@example.com',
+      });
+      expect(updatedEmp0?.fullName).toBe('Founder Zero (Updated)');
+      expect(service.getById(0)?.fullName).toBe('Founder Zero (Updated)');
+
+      // Save existing employee with identifier 0
+      const saveResult = service.save(
+        {
+          identifier: 0,
+          fullName: 'Founder Zero (Saved)',
+          department: 'Executive',
+          designation: 'Chairman',
+          emailAddress: 'chairman@example.com',
+        },
+        true,
+      );
+      expect(saveResult.isNew).toBe(false);
+      expect(saveResult.employee.fullName).toBe('Founder Zero (Saved)');
+
+      // Delete employee with identifier 0
+      const deleted = service.delete(0);
+      expect(deleted?.identifier).toBe(0);
+      expect(service.getById(0)).toBeUndefined();
+      expect(service.getAll()).toHaveLength(1);
     });
   });
 });

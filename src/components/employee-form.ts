@@ -1,16 +1,10 @@
 import { LitElement, css, html } from 'lit';
 import type { PropertyValues, TemplateResult } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property, state, queryAll } from 'lit/decorators.js';
 import type { Employee } from '../types/employee';
 import { employeeService } from '../services/employee-service';
-import '../ui/ui-input';
+import { UiInput } from '../ui/ui-input';
 import '../ui/ui-button';
-
-interface EmployeeFormErrorMessages {
-  fullName: string;
-  department: string;
-  emailAddress: string;
-}
 
 @customElement('employee-form')
 export class EmployeeForm extends LitElement {
@@ -29,12 +23,8 @@ export class EmployeeForm extends LitElement {
   @state()
   private draftEmailAddress = '';
 
-  @state()
-  private errorMessages: EmployeeFormErrorMessages = {
-    fullName: '',
-    department: '',
-    emailAddress: '',
-  };
+  @queryAll('ui-input')
+  private inputElements!: NodeListOf<UiInput>;
 
   static readonly styles = css`
     :host {
@@ -66,7 +56,6 @@ export class EmployeeForm extends LitElement {
       this.draftDepartment = this.employeeToEdit.department;
       this.draftDesignation = this.employeeToEdit.designation;
       this.draftEmailAddress = this.employeeToEdit.emailAddress;
-      this.errorMessages = { fullName: '', department: '', emailAddress: '' };
     }
   }
 
@@ -85,7 +74,6 @@ export class EmployeeForm extends LitElement {
           placeholder="Full Name"
           required
           .value=${this.draftFullName}
-          error-message=${this.errorMessages.fullName}
           @value-changed=${this.handleFieldValueChanged}
         >
           ${this.renderPersonIcon()}
@@ -95,7 +83,6 @@ export class EmployeeForm extends LitElement {
           placeholder="Department"
           required
           .value=${this.draftDepartment}
-          error-message=${this.errorMessages.department}
           @value-changed=${this.handleFieldValueChanged}
         >
           ${this.renderBuildingIcon()}
@@ -114,7 +101,6 @@ export class EmployeeForm extends LitElement {
           placeholder="Email"
           required
           .value=${this.draftEmailAddress}
-          error-message=${this.errorMessages.emailAddress}
           @value-changed=${this.handleFieldValueChanged}
         >
           ${this.renderMailIcon()}
@@ -209,7 +195,11 @@ export class EmployeeForm extends LitElement {
   private handleFieldValueChanged(
     event: CustomEvent<{ name: string; value: string }>,
   ): void {
-    const { name, value } = event.detail;
+    const detail = event.detail;
+    if (!detail) {
+      return;
+    }
+    const { name, value } = detail;
     if (name === 'fullName') {
       this.draftFullName = value;
     } else if (name === 'department') {
@@ -225,14 +215,16 @@ export class EmployeeForm extends LitElement {
     if (!this.validateForm()) {
       return;
     }
+    const currentEdit = this.employeeToEdit;
+    const isEdit = currentEdit !== null;
     const employeeData: Employee = {
-      identifier: this.employeeToEdit === null ? 0 : this.employeeToEdit.identifier,
+      identifier: currentEdit !== null ? currentEdit.identifier : 0,
       fullName: this.draftFullName.trim(),
       department: this.draftDepartment.trim(),
       designation: this.draftDesignation.trim(),
       emailAddress: this.draftEmailAddress.trim(),
     };
-    const { employee, isNew } = employeeService.save(employeeData);
+    const { employee, isNew } = employeeService.save(employeeData, isEdit);
     this.dispatchEvent(
       new CustomEvent<{ employee: Employee }>('employee-save', {
         detail: { employee },
@@ -266,33 +258,25 @@ export class EmployeeForm extends LitElement {
     this.draftDepartment = '';
     this.draftDesignation = '';
     this.draftEmailAddress = '';
-    this.errorMessages = { fullName: '', department: '', emailAddress: '' };
+    if (this.inputElements) {
+      for (const input of this.inputElements) {
+        input.clear();
+      }
+    }
   }
 
   private validateForm(): boolean {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const nextErrorMessages: EmployeeFormErrorMessages = {
-      fullName: '',
-      department: '',
-      emailAddress: '',
-    };
-    if (this.draftFullName.trim() === '') {
-      nextErrorMessages.fullName = 'Name is required';
+    if (!this.inputElements || this.inputElements.length === 0) {
+      return true;
     }
-    if (this.draftDepartment.trim() === '') {
-      nextErrorMessages.department = 'Department is required';
+    let allValid = true;
+    for (const input of this.inputElements) {
+      const isFieldValid = input.validate();
+      if (!isFieldValid) {
+        allValid = false;
+      }
     }
-    if (this.draftEmailAddress.trim() === '') {
-      nextErrorMessages.emailAddress = 'Email is required';
-    } else if (!emailPattern.test(this.draftEmailAddress.trim())) {
-      nextErrorMessages.emailAddress = 'Enter a valid email';
-    }
-    this.errorMessages = nextErrorMessages;
-    return (
-      nextErrorMessages.fullName === '' &&
-      nextErrorMessages.department === '' &&
-      nextErrorMessages.emailAddress === ''
-    );
+    return allValid;
   }
 }
 

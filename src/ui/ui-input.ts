@@ -4,25 +4,28 @@ import { customElement, property } from 'lit/decorators.js';
 
 @customElement('ui-input')
 export class UiInput extends LitElement {
-  @property({ type: String })
+  @property()
   label = '';
 
-  @property({ type: String })
+  @property()
   name = '';
 
-  @property({ type: String })
+  @property()
   type = 'text';
 
-  @property({ type: String })
-  value = '';
+  @property()
+  value: string | number | null | undefined = '';
 
-  @property({ type: String })
+  @property()
   placeholder = '';
 
-  @property({ type: Boolean })
+  @property({ type: Boolean, reflect: true })
   required = false;
 
-  @property({ type: String, attribute: 'error-message' })
+  @property({ type: Boolean, reflect: true })
+  disabled = false;
+
+  @property({ attribute: 'error-message' })
   errorMessage = '';
 
   static readonly styles = css`
@@ -61,6 +64,12 @@ export class UiInput extends LitElement {
       border-color: var(--color-danger, #dc2626);
     }
 
+    .input-wrapper.disabled {
+      background-color: var(--color-background, #f1f5f9);
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
     ::slotted(svg) {
       width: 18px;
       height: 18px;
@@ -78,6 +87,11 @@ export class UiInput extends LitElement {
       color: var(--color-text-primary, #111111);
       font-family: inherit;
       font-size: 0.95rem;
+    }
+
+    input:disabled {
+      cursor: not-allowed;
+      color: var(--color-text-secondary, #64748b);
     }
 
     input::placeholder {
@@ -113,15 +127,29 @@ export class UiInput extends LitElement {
   }
 
   private renderInputField(): TemplateResult {
+    const wrapperClasses = [
+      'input-wrapper',
+      this.errorMessage !== '' ? 'invalid' : '',
+      this.disabled ? 'disabled' : '',
+    ]
+      .filter((className) => className !== '')
+      .join(' ');
+
+    const displayValue =
+      this.value === null || this.value === undefined ? '' : String(this.value);
+
     return html`
-      <div class="input-wrapper ${this.errorMessage !== '' ? 'invalid' : ''}">
+      <div class=${wrapperClasses}>
         <slot name="icon"></slot>
         <input
           id="input-field"
           type=${this.type}
-          .value=${this.value}
+          .value=${displayValue}
           placeholder=${this.placeholder}
+          ?disabled=${this.disabled}
+          ?required=${this.required}
           @input=${this.handleInput}
+          @blur=${this.handleBlur}
         />
       </div>
     `;
@@ -134,16 +162,69 @@ export class UiInput extends LitElement {
     return html`<p class="error-text">${this.errorMessage}</p>`;
   }
 
+  validate(): boolean {
+    const stringValue =
+      this.value === null || this.value === undefined
+        ? ''
+        : String(this.value).trim();
+
+    if (this.required && stringValue === '') {
+      const fieldDescriptor =
+        this.label !== ''
+          ? this.label
+          : this.placeholder !== ''
+            ? this.placeholder
+            : 'Field';
+      this.errorMessage = `${fieldDescriptor} is required`;
+      return false;
+    }
+
+    if (this.type === 'email' && stringValue !== '') {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(stringValue)) {
+        this.errorMessage = 'Enter a valid email';
+        return false;
+      }
+    }
+
+    this.errorMessage = '';
+    return true;
+  }
+
+  clear(): void {
+    this.value = '';
+    this.errorMessage = '';
+  }
+
   private handleInput(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    this.value = inputElement.value;
+    if (this.disabled) {
+      return;
+    }
+    const target = event.target;
+    if (!(target instanceof HTMLInputElement)) {
+      return;
+    }
+    const nextValue = target.value;
+    this.value = nextValue;
+    if (this.errorMessage !== '') {
+      this.validate();
+    }
     this.dispatchEvent(
       new CustomEvent<{ name: string; value: string }>('value-changed', {
-        detail: { name: this.name, value: inputElement.value },
+        detail: { name: this.name, value: nextValue },
         bubbles: true,
         composed: true,
       }),
     );
+  }
+
+  private handleBlur(): void {
+    if (this.disabled) {
+      return;
+    }
+    if (this.value !== '' && this.value !== null && this.value !== undefined) {
+      this.validate();
+    }
   }
 }
 

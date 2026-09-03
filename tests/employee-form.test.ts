@@ -94,9 +94,7 @@ describe('EmployeeForm Component & Validation Logic', () => {
       await formElement.updateComplete;
 
       expect(saveSpy).not.toHaveBeenCalled();
-      expect(nameInput.getAttribute('error-message') || nameInput.errorMessage).toBe(
-        'Name is required',
-      );
+      expect(nameInput.errorMessage).toBe('Full Name is required');
     });
 
     it('should show error when Department is empty or only whitespace', async () => {
@@ -179,15 +177,9 @@ describe('EmployeeForm Component & Validation Logic', () => {
       await formElement.updateComplete;
 
       expect(saveSpy).not.toHaveBeenCalled();
-      expect(nameInput.getAttribute('error-message') || nameInput.errorMessage).toBe(
-        'Name is required',
-      );
-      expect(
-        departmentInput.getAttribute('error-message') || departmentInput.errorMessage,
-      ).toBe('Department is required');
-      expect(emailInput.getAttribute('error-message') || emailInput.errorMessage).toBe(
-        'Email is required',
-      );
+      expect(nameInput.errorMessage).toBe('Full Name is required');
+      expect(departmentInput.errorMessage).toBe('Department is required');
+      expect(emailInput.errorMessage).toBe('Email is required');
     });
 
     it('should pass validation and dispatch employee-save when all fields are valid', async () => {
@@ -208,7 +200,7 @@ describe('EmployeeForm Component & Validation Logic', () => {
       await formElement.updateComplete;
 
       expect(emittedEmployee).toBeDefined();
-      expect(emittedEmployee?.identifier).toBeGreaterThan(0);
+      expect(typeof emittedEmployee?.identifier).toBe('number');
       expect(emittedEmployee?.fullName).toBe('Jane Doe');
       expect(emittedEmployee?.department).toBe('Product');
       expect(emittedEmployee?.designation).toBe('Lead Designer');
@@ -277,9 +269,7 @@ describe('EmployeeForm Component & Validation Logic', () => {
       // Trigger error first
       saveButton.click();
       await formElement.updateComplete;
-      expect(nameInput.getAttribute('error-message') || nameInput.errorMessage).toBe(
-        'Name is required',
-      );
+      expect(nameInput.errorMessage).toBe('Full Name is required');
 
       await setInputValue(nameInput, 'Some name');
       await setInputValue(departmentInput, 'Some dept');
@@ -297,7 +287,35 @@ describe('EmployeeForm Component & Validation Logic', () => {
       expect(departmentInput.value).toBe('');
       expect(designationInput.value).toBe('');
       expect(emailInput.value).toBe('');
-      expect(nameInput.getAttribute('error-message') || nameInput.errorMessage).toBe('');
+      expect(nameInput.errorMessage).toBe('');
+    });
+
+    it('should correctly support editing and updating an employee with identifier 0', async () => {
+      const employeeZero: Employee = {
+        identifier: 0,
+        fullName: 'Founder Zero',
+        department: 'Executive',
+        designation: 'Founder',
+        emailAddress: 'founder@example.com',
+      };
+
+      formElement.employeeToEdit = employeeZero;
+      await formElement.updateComplete;
+
+      const { nameInput } = getInputs();
+      await setInputValue(nameInput, 'Founder Zero (Updated)');
+
+      let savedDetail: { employee: Employee } | undefined;
+      formElement.addEventListener('employee-save', (event: Event) => {
+        savedDetail = (event as CustomEvent<{ employee: Employee }>).detail;
+      });
+
+      const { saveButton } = getButtons();
+      saveButton.click();
+      await formElement.updateComplete;
+
+      expect(savedDetail?.employee.identifier).toBe(0);
+      expect(savedDetail?.employee.fullName).toBe('Founder Zero (Updated)');
     });
   });
 });

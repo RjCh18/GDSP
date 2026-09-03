@@ -112,6 +112,83 @@ describe('UI Primitives Components', () => {
       const errorText = inputElement.shadowRoot?.querySelector('.error-text');
       expect(errorText?.textContent).toBe('Email is required');
     });
+
+    it('should handle disabled state correctly on input and wrapper', async () => {
+      inputElement.disabled = true;
+      await inputElement.updateComplete;
+
+      const wrapper = inputElement.shadowRoot?.querySelector('.input-wrapper');
+      expect(wrapper?.classList.contains('disabled')).toBe(true);
+
+      const nativeInput = inputElement.shadowRoot?.querySelector('input');
+      expect(nativeInput?.disabled).toBe(true);
+
+      // Verify input events are ignored when disabled
+      const changeSpy = vi.fn();
+      inputElement.addEventListener('value-changed', changeSpy);
+      if (nativeInput) {
+        nativeInput.value = 'Ignored Input';
+        nativeInput.dispatchEvent(new Event('input'));
+      }
+      expect(changeSpy).not.toHaveBeenCalled();
+    });
+
+    it('should self-validate required field and set appropriate error message', async () => {
+      inputElement.label = 'Full Name';
+      inputElement.required = true;
+      inputElement.value = '';
+      await inputElement.updateComplete;
+
+      const isValid = inputElement.validate();
+      expect(isValid).toBe(false);
+      expect(inputElement.errorMessage).toBe('Full Name is required');
+
+      // Setting valid value clears error on validate
+      inputElement.value = 'John Smith';
+      expect(inputElement.validate()).toBe(true);
+      expect(inputElement.errorMessage).toBe('');
+    });
+
+    it('should self-validate email format when type="email"', async () => {
+      inputElement.type = 'email';
+      inputElement.value = 'not-an-email';
+      await inputElement.updateComplete;
+
+      expect(inputElement.validate()).toBe(false);
+      expect(inputElement.errorMessage).toBe('Enter a valid email');
+
+      inputElement.value = 'valid@example.com';
+      expect(inputElement.validate()).toBe(true);
+      expect(inputElement.errorMessage).toBe('');
+    });
+
+    it('should reset value and error message on clear()', async () => {
+      inputElement.value = 'temporary value';
+      inputElement.errorMessage = 'Some error';
+      await inputElement.updateComplete;
+
+      inputElement.clear();
+      await inputElement.updateComplete;
+
+      expect(inputElement.value).toBe('');
+      expect(inputElement.errorMessage).toBe('');
+    });
+
+    it('should accept numbers, strings, and null/undefined as value', async () => {
+      inputElement.value = 12345;
+      await inputElement.updateComplete;
+
+      const nativeInput = inputElement.shadowRoot?.querySelector('input');
+      expect(nativeInput?.value).toBe('12345');
+
+      inputElement.value = null;
+      await inputElement.updateComplete;
+      expect(nativeInput?.value).toBe('');
+
+      inputElement.value = 'Text value';
+      await inputElement.updateComplete;
+      expect(nativeInput?.value).toBe('Text value');
+    });
   });
 
   describe('UiDialog Component', () => {
