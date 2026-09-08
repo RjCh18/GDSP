@@ -1,14 +1,17 @@
 import { LitElement, css, html, nothing } from 'lit';
 import type { TemplateResult } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement, query, state } from 'lit/decorators.js';
 import type { Employee } from './types/employee';
 import type { EmployeeForm } from './components/employee-form';
 import './components/employee-form';
 import './components/employee-table';
-import './ui/ui-button';
+import { UI_BUTTON_VARIANT } from './ui/ui-button';
 
 @customElement('app-shell')
 export class AppShell extends LitElement {
+  @query('employee-form')
+  private readonly employeeFormElement!: EmployeeForm;
+
   @state()
   private toastMessage = '';
 
@@ -47,12 +50,12 @@ export class AppShell extends LitElement {
 
     .header-title {
       margin: 0;
-      font-size: 1.6rem;
+      font-size: 25.6px;
     }
 
     .header-subtitle {
       margin: 4px 0 0;
-      font-size: 0.95rem;
+      font-size: 15.2px;
       opacity: 0.85;
     }
 
@@ -93,7 +96,7 @@ export class AppShell extends LitElement {
       padding: 2px;
       cursor: pointer;
       color: var(--color-text-secondary, #64748b);
-      font-size: 0.95rem;
+      font-size: 15.2px;
     }
 
     .events-strip {
@@ -108,7 +111,7 @@ export class AppShell extends LitElement {
       border: 1px dashed var(--color-border, #e2e8f0);
       border-radius: 8px;
       color: var(--color-text-secondary, #64748b);
-      font-size: 0.85rem;
+      font-size: 13.6px;
     }
 
     .last-event {
@@ -134,7 +137,10 @@ export class AppShell extends LitElement {
           <h1 class="header-title">Employee Management</h1>
           <p class="header-subtitle">Manage your organization employees</p>
         </div>
-        <ui-button variant="contrast" @click=${this.handleAddEmployeeRequest}>
+        <ui-button
+          .variant=${UI_BUTTON_VARIANT.CONTRAST}
+          @click=${this.handleAddEmployeeRequest}
+        >
           + Add Employee
         </ui-button>
       </header>
@@ -218,12 +224,11 @@ export class AppShell extends LitElement {
     event: CustomEvent<{ employee: Employee }>,
   ): void {
     this.lastEmittedEventName = 'employee-deleted';
-    const formElement = this.getFormElement();
-    if (
-      formElement &&
-      formElement.employeeToEdit?.identifier === event.detail.employee.identifier
-    ) {
-      formElement.employeeToEdit = null;
+    const isEditingDeletedEmployee =
+      this.employeeFormElement.employeeToEdit?.identifier ===
+      event.detail.employee.identifier;
+    if (isEditingDeletedEmployee) {
+      this.employeeFormElement.employeeToEdit = null;
     }
     this.showToast('Employee deleted successfully!');
   }
@@ -231,30 +236,17 @@ export class AppShell extends LitElement {
   private handleEmployeeEditRequest(
     event: CustomEvent<{ employee: Employee }>,
   ): void {
-    const formElement = this.getFormElement();
-    if (formElement) {
-      formElement.employeeToEdit = event.detail.employee;
-    }
+    this.employeeFormElement.employeeToEdit = event.detail.employee;
     this.scrollFormIntoView();
   }
 
   private handleFormCleared(): void {
-    const formElement = this.getFormElement();
-    if (formElement) {
-      formElement.employeeToEdit = null;
-    }
+    this.employeeFormElement.employeeToEdit = null;
   }
 
   private handleAddEmployeeRequest(): void {
-    const formElement = this.getFormElement();
-    if (formElement) {
-      formElement.employeeToEdit = null;
-    }
+    this.employeeFormElement.employeeToEdit = null;
     this.scrollFormIntoView();
-  }
-
-  private getFormElement(): EmployeeForm | null {
-    return this.renderRoot.querySelector('employee-form');
   }
 
   private handleToastClose(): void {
@@ -263,8 +255,7 @@ export class AppShell extends LitElement {
   }
 
   private scrollFormIntoView(): void {
-    const formElement = this.getFormElement();
-    formElement?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    this.employeeFormElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   private showToast(message: string): void {

@@ -2,6 +2,12 @@ import type { Employee } from '../types/employee';
 
 export type EmployeeListener = (employees: Employee[]) => void;
 
+function hasIdentifier(
+  employee: Employee | Omit<Employee, 'identifier'>,
+): employee is Employee {
+  return 'identifier' in employee && typeof employee.identifier === 'number';
+}
+
 export class EmployeeService {
   private employees: Employee[] = [];
   private listeners: Set<EmployeeListener> = new Set();
@@ -62,7 +68,7 @@ export class EmployeeService {
       identifier: assignedIdentifier,
       fullName: draft.fullName,
       department: draft.department,
-      designation: draft.designation || '',
+      designation: draft.designation ?? '',
       emailAddress: draft.emailAddress,
     };
     this.employees = [...this.employees, newEmployee];
@@ -106,13 +112,12 @@ export class EmployeeService {
     const shouldUpdate =
       isEdit !== undefined
         ? isEdit
-        : 'identifier' in employee &&
-          typeof employee.identifier === 'number' &&
+        : hasIdentifier(employee) &&
           this.employees.some((e) => e.identifier === employee.identifier);
 
-    if (shouldUpdate && 'identifier' in employee && typeof employee.identifier === 'number') {
-      const updated = this.update(employee as Employee);
-      return { employee: updated ?? (employee as Employee), isNew: false };
+    if (shouldUpdate && hasIdentifier(employee)) {
+      const updated = this.update(employee);
+      return { employee: updated ?? employee, isNew: false };
     }
 
     const created = this.add(employee);

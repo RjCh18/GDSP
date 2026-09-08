@@ -4,7 +4,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import type { Employee } from '../types/employee';
 import { employeeService } from '../services/employee-service';
 import '../ui/ui-input';
-import '../ui/ui-button';
+import { UI_BUTTON_VARIANT } from '../ui/ui-button';
 import '../ui/ui-dialog';
 
 @customElement('employee-table')
@@ -66,7 +66,7 @@ export class EmployeeTable extends LitElement {
 
     .employee-header-row {
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 14.4px;
       color: var(--color-text-secondary, #64748b);
       background-color: var(--color-background, #f1f5f9);
       border-bottom: 1px solid var(--color-border, #e2e8f0);
@@ -100,7 +100,7 @@ export class EmployeeTable extends LitElement {
       border-radius: 50%;
       background-color: var(--color-primary, #2563eb);
       color: var(--color-primary-contrast, #ffffff);
-      font-size: 0.72rem;
+      font-size: 11.52px;
       font-weight: 700;
       flex-shrink: 0;
     }
@@ -122,12 +122,12 @@ export class EmployeeTable extends LitElement {
     }
 
     .empty-state-icon {
-      font-size: 2.4rem;
+      font-size: 38.4px;
     }
 
     .empty-state-title {
       margin: 0;
-      font-size: 1.05rem;
+      font-size: 16.8px;
       color: var(--color-text-primary, #111111);
     }
 
@@ -143,7 +143,7 @@ export class EmployeeTable extends LitElement {
       justify-content: space-between;
       gap: 12px;
       color: var(--color-text-secondary, #64748b);
-      font-size: 0.9rem;
+      font-size: 14.4px;
     }
 
     .pagination-controls {
@@ -187,6 +187,7 @@ export class EmployeeTable extends LitElement {
           class="search-field"
           name="searchTerm"
           placeholder="Search employees..."
+          aria-label="Search employees"
           .value=${this.searchTerm}
           @value-changed=${this.handleSearchValueChanged}
         >
@@ -256,7 +257,7 @@ export class EmployeeTable extends LitElement {
         <span class="cell-value">${employee.emailAddress}</span>
         <span class="action-buttons">
           <ui-button
-            variant="outline-primary"
+            .variant=${UI_BUTTON_VARIANT.OUTLINE_PRIMARY}
             small
             icon-only
             aria-label="Edit employee"
@@ -265,7 +266,7 @@ export class EmployeeTable extends LitElement {
             ${this.renderPencilIcon()}
           </ui-button>
           <ui-button
-            variant="outline-danger"
+            .variant=${UI_BUTTON_VARIANT.OUTLINE_DANGER}
             small
             icon-only
             aria-label="Delete employee"
@@ -286,7 +287,10 @@ export class EmployeeTable extends LitElement {
         <p class="empty-state-description">
           Add your first employee to get started.
         </p>
-        <ui-button variant="primary" @click=${this.handleAddEmployeeClick}>
+        <ui-button
+          .variant=${UI_BUTTON_VARIANT.PRIMARY}
+          @click=${this.handleAddEmployeeClick}
+        >
           + Add Employee
         </ui-button>
       </div>
@@ -320,7 +324,7 @@ export class EmployeeTable extends LitElement {
         </span>
         <span class="pagination-controls">
           <ui-button
-            variant="secondary"
+            .variant=${UI_BUTTON_VARIANT.SECONDARY}
             small
             pill
             .disabled=${activePageNumber === 1}
@@ -331,9 +335,9 @@ export class EmployeeTable extends LitElement {
           ${Array.from({ length: totalPages }, (_, index) => index + 1).map(
             (pageNumber) => html`
               <ui-button
-                variant=${pageNumber === activePageNumber
-                  ? 'primary'
-                  : 'secondary'}
+                .variant=${pageNumber === activePageNumber
+                  ? UI_BUTTON_VARIANT.PRIMARY
+                  : UI_BUTTON_VARIANT.SECONDARY}
                 small
                 pill
                 @click=${() => this.handlePageChange(pageNumber)}
@@ -343,7 +347,7 @@ export class EmployeeTable extends LitElement {
             `,
           )}
           <ui-button
-            variant="secondary"
+            .variant=${UI_BUTTON_VARIANT.SECONDARY}
             small
             pill
             .disabled=${activePageNumber === totalPages}

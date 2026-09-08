@@ -28,6 +28,13 @@ export class UiInput extends LitElement {
   @property({ attribute: 'error-message' })
   errorMessage = '';
 
+  @property({ type: String, attribute: 'aria-label' })
+  ariaLabel: string | null = null;
+
+  private static errorTextIdSequence = 0;
+
+  private readonly errorTextId = `ui-input-error-${UiInput.errorTextIdSequence++}`;
+
   static readonly styles = css`
     :host {
       display: flex;
@@ -37,7 +44,7 @@ export class UiInput extends LitElement {
     }
 
     label {
-      font-size: 0.9rem;
+      font-size: 14.4px;
       font-weight: 600;
       color: var(--color-text-primary, #111111);
     }
@@ -86,7 +93,7 @@ export class UiInput extends LitElement {
       background: transparent;
       color: var(--color-text-primary, #111111);
       font-family: inherit;
-      font-size: 0.95rem;
+      font-size: 15.2px;
     }
 
     input:disabled {
@@ -100,7 +107,7 @@ export class UiInput extends LitElement {
 
     .error-text {
       margin: 0;
-      font-size: 0.8rem;
+      font-size: 12.8px;
       color: var(--color-danger, #dc2626);
     }
   `;
@@ -135,8 +142,7 @@ export class UiInput extends LitElement {
       .filter((className) => className !== '')
       .join(' ');
 
-    const displayValue =
-      this.value === null || this.value === undefined ? '' : String(this.value);
+    const displayValue = this.value == null ? '' : String(this.value);
 
     return html`
       <div class=${wrapperClasses}>
@@ -148,6 +154,9 @@ export class UiInput extends LitElement {
           placeholder=${this.placeholder}
           ?disabled=${this.disabled}
           ?required=${this.required}
+          aria-label=${this.ariaLabel ?? nothing}
+          aria-invalid=${this.errorMessage !== ''}
+          aria-describedby=${this.errorMessage !== '' ? this.errorTextId : nothing}
           @input=${this.handleInput}
           @blur=${this.handleBlur}
         />
@@ -159,14 +168,11 @@ export class UiInput extends LitElement {
     if (this.errorMessage === '') {
       return nothing;
     }
-    return html`<p class="error-text">${this.errorMessage}</p>`;
+    return html`<p class="error-text" id=${this.errorTextId} role="alert">${this.errorMessage}</p>`;
   }
 
   validate(): boolean {
-    const stringValue =
-      this.value === null || this.value === undefined
-        ? ''
-        : String(this.value).trim();
+    const stringValue = this.value == null ? '' : String(this.value).trim();
 
     if (this.required && stringValue === '') {
       const fieldDescriptor =

@@ -4,7 +4,14 @@ import { customElement, property, state, queryAll } from 'lit/decorators.js';
 import type { Employee } from '../types/employee';
 import { employeeService } from '../services/employee-service';
 import { UiInput } from '../ui/ui-input';
-import '../ui/ui-button';
+import { UI_BUTTON_VARIANT } from '../ui/ui-button';
+
+const EMPLOYEE_FORM_FIELD = {
+  FULL_NAME: 'fullName',
+  DEPARTMENT: 'department',
+  DESIGNATION: 'designation',
+  EMAIL_ADDRESS: 'emailAddress',
+} as const;
 
 @customElement('employee-form')
 export class EmployeeForm extends LitElement {
@@ -70,7 +77,7 @@ export class EmployeeForm extends LitElement {
     return html`
       <div class="form-fields">
         <ui-input
-          name="fullName"
+          name=${EMPLOYEE_FORM_FIELD.FULL_NAME}
           placeholder="Full Name"
           required
           .value=${this.draftFullName}
@@ -79,7 +86,7 @@ export class EmployeeForm extends LitElement {
           ${this.renderPersonIcon()}
         </ui-input>
         <ui-input
-          name="department"
+          name=${EMPLOYEE_FORM_FIELD.DEPARTMENT}
           placeholder="Department"
           required
           .value=${this.draftDepartment}
@@ -88,7 +95,7 @@ export class EmployeeForm extends LitElement {
           ${this.renderBuildingIcon()}
         </ui-input>
         <ui-input
-          name="designation"
+          name=${EMPLOYEE_FORM_FIELD.DESIGNATION}
           placeholder="Designation"
           .value=${this.draftDesignation}
           @value-changed=${this.handleFieldValueChanged}
@@ -96,7 +103,7 @@ export class EmployeeForm extends LitElement {
           ${this.renderBadgeIcon()}
         </ui-input>
         <ui-input
-          name="emailAddress"
+          name=${EMPLOYEE_FORM_FIELD.EMAIL_ADDRESS}
           type="email"
           placeholder="Email"
           required
@@ -112,10 +119,16 @@ export class EmployeeForm extends LitElement {
   private renderFormActions(): TemplateResult {
     return html`
       <div class="form-actions">
-        <ui-button variant="primary" @click=${this.handleSaveClick}>
+        <ui-button
+          .variant=${UI_BUTTON_VARIANT.PRIMARY}
+          @click=${this.handleSaveClick}
+        >
           ${this.employeeToEdit === null ? 'Save' : 'Update'}
         </ui-button>
-        <ui-button variant="secondary" @click=${this.handleClearClick}>
+        <ui-button
+          .variant=${UI_BUTTON_VARIANT.SECONDARY}
+          @click=${this.handleClearClick}
+        >
           Clear
         </ui-button>
       </div>
@@ -200,14 +213,19 @@ export class EmployeeForm extends LitElement {
       return;
     }
     const { name, value } = detail;
-    if (name === 'fullName') {
-      this.draftFullName = value;
-    } else if (name === 'department') {
-      this.draftDepartment = value;
-    } else if (name === 'designation') {
-      this.draftDesignation = value;
-    } else if (name === 'emailAddress') {
-      this.draftEmailAddress = value;
+    switch (name) {
+      case EMPLOYEE_FORM_FIELD.FULL_NAME:
+        this.draftFullName = value;
+        break;
+      case EMPLOYEE_FORM_FIELD.DEPARTMENT:
+        this.draftDepartment = value;
+        break;
+      case EMPLOYEE_FORM_FIELD.DESIGNATION:
+        this.draftDesignation = value;
+        break;
+      case EMPLOYEE_FORM_FIELD.EMAIL_ADDRESS:
+        this.draftEmailAddress = value;
+        break;
     }
   }
 
@@ -217,13 +235,20 @@ export class EmployeeForm extends LitElement {
     }
     const currentEdit = this.employeeToEdit;
     const isEdit = currentEdit !== null;
-    const employeeData: Employee = {
-      identifier: currentEdit !== null ? currentEdit.identifier : 0,
-      fullName: this.draftFullName.trim(),
-      department: this.draftDepartment.trim(),
-      designation: this.draftDesignation.trim(),
-      emailAddress: this.draftEmailAddress.trim(),
-    };
+    const fullName = this.draftFullName.trim();
+    const department = this.draftDepartment.trim();
+    const designation = this.draftDesignation.trim();
+    const emailAddress = this.draftEmailAddress.trim();
+    const employeeData: Employee | Omit<Employee, 'identifier'> =
+      currentEdit !== null
+        ? {
+            identifier: currentEdit.identifier,
+            fullName,
+            department,
+            designation,
+            emailAddress,
+          }
+        : { fullName, department, designation, emailAddress };
     const { employee, isNew } = employeeService.save(employeeData, isEdit);
     this.dispatchEvent(
       new CustomEvent<{ employee: Employee }>('employee-save', {

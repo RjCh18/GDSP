@@ -1,7 +1,9 @@
 import { LitElement, css, html, nothing } from 'lit';
 import type { TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import './ui-button';
+import { UI_BUTTON_VARIANT } from './ui-button';
+
+const DIALOG_HEADING_ID = 'dialog-heading';
 
 @customElement('ui-dialog')
 export class UiDialog extends LitElement {
@@ -51,7 +53,7 @@ export class UiDialog extends LitElement {
 
     .dialog-heading {
       margin: 0;
-      font-size: 1.15rem;
+      font-size: 18.4px;
       color: var(--color-text-primary, #111111);
     }
 
@@ -59,7 +61,7 @@ export class UiDialog extends LitElement {
       border: none;
       background: none;
       padding: 4px;
-      font-size: 1.1rem;
+      font-size: 17.6px;
       cursor: pointer;
       color: var(--color-text-secondary, #64748b);
     }
@@ -81,7 +83,13 @@ export class UiDialog extends LitElement {
     }
     return html`
       <div class="dialog-backdrop" @click=${this.handleCancel}>
-        <div class="dialog-panel" @click=${this.handlePanelClick}>
+        <div
+          class="dialog-panel"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby=${DIALOG_HEADING_ID}
+          @click=${this.handlePanelClick}
+        >
           ${this.renderDialogHeader()}
           <div class="dialog-body"><slot></slot></div>
           ${this.renderDialogActions()}
@@ -93,7 +101,7 @@ export class UiDialog extends LitElement {
   private renderDialogHeader(): TemplateResult {
     return html`
       <div class="dialog-header">
-        <h2 class="dialog-heading">${this.heading}</h2>
+        <h2 class="dialog-heading" id=${DIALOG_HEADING_ID}>${this.heading}</h2>
         <button
           type="button"
           class="dialog-close-button"
@@ -109,10 +117,16 @@ export class UiDialog extends LitElement {
   private renderDialogActions(): TemplateResult {
     return html`
       <div class="dialog-actions">
-        <ui-button variant="secondary" @click=${this.handleCancel}>
+        <ui-button
+          .variant=${UI_BUTTON_VARIANT.SECONDARY}
+          @click=${this.handleCancel}
+        >
           ${this.cancelLabel}
         </ui-button>
-        <ui-button variant="danger" @click=${this.handleConfirm}>
+        <ui-button
+          .variant=${UI_BUTTON_VARIANT.DANGER}
+          @click=${this.handleConfirm}
+        >
           ${this.confirmLabel}
         </ui-button>
       </div>

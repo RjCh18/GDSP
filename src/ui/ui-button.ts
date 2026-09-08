@@ -1,19 +1,23 @@
-import { LitElement, css, html } from 'lit';
+import { LitElement, css, html, nothing } from 'lit';
 import type { TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
+export const UI_BUTTON_VARIANT = {
+  PRIMARY: 'primary',
+  SECONDARY: 'secondary',
+  DANGER: 'danger',
+  CONTRAST: 'contrast',
+  OUTLINE_PRIMARY: 'outline-primary',
+  OUTLINE_DANGER: 'outline-danger',
+} as const;
+
 export type UiButtonVariant =
-  | 'primary'
-  | 'secondary'
-  | 'danger'
-  | 'contrast'
-  | 'outline-primary'
-  | 'outline-danger';
+  (typeof UI_BUTTON_VARIANT)[keyof typeof UI_BUTTON_VARIANT];
 
 @customElement('ui-button')
 export class UiButton extends LitElement {
   @property({ type: String })
-  variant: UiButtonVariant = 'primary';
+  variant: UiButtonVariant = UI_BUTTON_VARIANT.PRIMARY;
 
   @property({ type: Boolean })
   small = false;
@@ -24,8 +28,11 @@ export class UiButton extends LitElement {
   @property({ type: Boolean, attribute: 'icon-only' })
   iconOnly = false;
 
-  @property({ type: Boolean })
+  @property({ type: Boolean, reflect: true })
   disabled = false;
+
+  @property({ type: String, attribute: 'aria-label' })
+  ariaLabel: string | null = null;
 
   static readonly styles = css`
     :host {
@@ -41,7 +48,7 @@ export class UiButton extends LitElement {
       border-radius: 6px;
       border: 1px solid transparent;
       font-family: inherit;
-      font-size: 0.95rem;
+      font-size: 15.2px;
       font-weight: 600;
       cursor: pointer;
       transition: background-color 0.15s ease, border-color 0.15s ease;
@@ -49,7 +56,7 @@ export class UiButton extends LitElement {
 
     button.small {
       padding: 6px 12px;
-      font-size: 0.85rem;
+      font-size: 13.6px;
     }
 
     button.pill {
@@ -139,7 +146,12 @@ export class UiButton extends LitElement {
       .filter((className) => className !== '')
       .join(' ');
     return html`
-      <button type="button" class=${classNames} ?disabled=${this.disabled}>
+      <button
+        type="button"
+        class=${classNames}
+        ?disabled=${this.disabled}
+        aria-label=${this.ariaLabel ?? nothing}
+      >
         <slot></slot>
       </button>
     `;
