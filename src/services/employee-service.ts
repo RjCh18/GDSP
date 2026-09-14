@@ -130,4 +130,32 @@ export class EmployeeService {
   }
 }
 
-export const employeeService = new EmployeeService();
+const EMPLOYEE_STORAGE_KEY = 'gdsp-employees';
+
+function isEmployeeArray(value: unknown): value is Employee[] {
+  return Array.isArray(value);
+}
+
+function loadPersistedEmployees(): Employee[] {
+  try {
+    const raw = localStorage.getItem(EMPLOYEE_STORAGE_KEY);
+    if (raw === null) {
+      return [];
+    }
+    const parsed: unknown = JSON.parse(raw);
+    return isEmployeeArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function persistEmployees(employees: Employee[]): void {
+  try {
+    localStorage.setItem(EMPLOYEE_STORAGE_KEY, JSON.stringify(employees));
+  } catch {
+    // Storage unavailable (private browsing, quota) - state stays in memory only.
+  }
+}
+
+export const employeeService = new EmployeeService(loadPersistedEmployees());
+employeeService.subscribe(persistEmployees);

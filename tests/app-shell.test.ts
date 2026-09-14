@@ -175,24 +175,5 @@ describe('AppShell Component (Shell Container)', () => {
       toast = shellElement.shadowRoot?.querySelector('.toast');
       expect(toast).toBeNull();
     });
-
-    it('should reset form edit state on Add Employee button click in header', async () => {
-      const { form } = getSubcomponents();
-      if (form) {
-        form.employeeToEdit = {
-          identifier: 1,
-          fullName: 'Target',
-          department: 'Dept',
-          designation: 'Desig',
-          emailAddress: 't@t.com',
-        };
-      }
-
-      const addBtn = shellElement.shadowRoot?.querySelector<HTMLElement>('.application-header ui-button');
-      addBtn?.click();
-      await shellElement.updateComplete;
-
-      expect(form?.employeeToEdit).toBeNull();
-    });
   });
 });

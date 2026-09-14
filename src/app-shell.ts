@@ -5,7 +5,6 @@ import type { Employee } from './types/employee';
 import type { EmployeeForm } from './components/employee-form';
 import './components/employee-form';
 import './components/employee-table';
-import { UI_BUTTON_VARIANT } from './ui/ui-button';
 
 @customElement('app-shell')
 export class AppShell extends LitElement {
@@ -137,12 +136,6 @@ export class AppShell extends LitElement {
           <h1 class="header-title">Employee Management</h1>
           <p class="header-subtitle">Manage your organization employees</p>
         </div>
-        <ui-button
-          .variant=${UI_BUTTON_VARIANT.CONTRAST}
-          @click=${this.handleAddEmployeeRequest}
-        >
-          + Add Employee
-        </ui-button>
       </header>
     `;
   }
