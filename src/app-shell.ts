@@ -1,23 +1,12 @@
 import { LitElement, css, html, nothing } from 'lit';
 import type { TemplateResult } from 'lit';
-import { customElement, query, state } from 'lit/decorators.js';
-import type { Employee } from './types/employee';
-import type { EmployeeForm } from './components/employee-form';
-import './components/employee-form';
-import './components/employee-table';
+import { customElement, state } from 'lit/decorators.js';
+import './widgets/employee/employee-widget';
 
 @customElement('app-shell')
 export class AppShell extends LitElement {
-  @query('employee-form')
-  private readonly employeeFormElement!: EmployeeForm;
-
-  @state()
-  private toastMessage = '';
-
   @state()
   private lastEmittedEventName = '';
-
-  private toastTimeoutIdentifier: number | undefined;
 
   static readonly styles = css`
     :host {
@@ -58,46 +47,6 @@ export class AppShell extends LitElement {
       opacity: 0.85;
     }
 
-    .content-card {
-      width: 100%;
-      max-width: 960px;
-      box-sizing: border-box;
-      padding: 24px;
-      background-color: var(--color-surface, #ffffff);
-      border: 1px solid var(--color-border, #e2e8f0);
-      border-radius: 10px;
-    }
-
-    .toast {
-      position: fixed;
-      top: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 18px;
-      border-radius: 8px;
-      border: 1px solid var(--color-success, #16a34a);
-      background-color: var(--color-success-surface, #f0fdf4);
-      color: var(--color-text-primary, #111111);
-      z-index: 200;
-    }
-
-    .toast-icon {
-      color: var(--color-success, #16a34a);
-      font-weight: 700;
-    }
-
-    .toast-close-button {
-      border: none;
-      background: none;
-      padding: 2px;
-      cursor: pointer;
-      color: var(--color-text-secondary, #64748b);
-      font-size: 15.2px;
-    }
-
     .events-strip {
       width: 100%;
       max-width: 960px;
@@ -121,10 +70,8 @@ export class AppShell extends LitElement {
 
   render(): TemplateResult {
     return html`
-      ${this.renderToast()}
       ${this.renderApplicationHeader()}
-      ${this.renderFormCard()}
-      ${this.renderTableCard()}
+      ${this.renderWidgets()}
       ${this.renderEventsStrip()}
     `;
   }
@@ -140,27 +87,13 @@ export class AppShell extends LitElement {
     `;
   }
 
-  private renderFormCard(): TemplateResult {
+  private renderWidgets(): TemplateResult {
     return html`
-      <section class="content-card">
-        <employee-form
-          @employee-added=${this.handleEmployeeAdded}
-          @employee-updated=${this.handleEmployeeUpdated}
-          @form-cleared=${this.handleFormCleared}
-        ></employee-form>
-      </section>
-    `;
-  }
-
-  private renderTableCard(): TemplateResult {
-    return html`
-      <section class="content-card">
-        <employee-table
-          @employee-edit-request=${this.handleEmployeeEditRequest}
-          @employee-deleted=${this.handleEmployeeDeleted}
-          @employee-add-request=${this.handleAddEmployeeRequest}
-        ></employee-table>
-      </section>
+      <employee-widget
+        @employee-added=${this.handleEmployeeAdded}
+        @employee-updated=${this.handleEmployeeUpdated}
+        @employee-deleted=${this.handleEmployeeDeleted}
+      ></employee-widget>
     `;
   }
 
@@ -179,84 +112,16 @@ export class AppShell extends LitElement {
     `;
   }
 
-  private renderToast(): TemplateResult | typeof nothing {
-    if (this.toastMessage === '') {
-      return nothing;
-    }
-    return html`
-      <div class="toast" role="status">
-        <span class="toast-icon">✓</span>
-        <span>${this.toastMessage}</span>
-        <button
-          type="button"
-          class="toast-close-button"
-          aria-label="Dismiss notification"
-          @click=${this.handleToastClose}
-        >
-          ✕
-        </button>
-      </div>
-    `;
-  }
-
-  private handleEmployeeAdded(
-    _event: CustomEvent<{ employee: Employee }>,
-  ): void {
+  private handleEmployeeAdded(_event: Event): void {
     this.lastEmittedEventName = 'employee-added';
-    this.showToast('Employee added successfully!');
   }
 
-  private handleEmployeeUpdated(
-    _event: CustomEvent<{ employee: Employee }>,
-  ): void {
+  private handleEmployeeUpdated(_event: Event): void {
     this.lastEmittedEventName = 'employee-updated';
-    this.showToast('Employee updated successfully!');
   }
 
-  private handleEmployeeDeleted(
-    event: CustomEvent<{ employee: Employee }>,
-  ): void {
+  private handleEmployeeDeleted(_event: Event): void {
     this.lastEmittedEventName = 'employee-deleted';
-    const isEditingDeletedEmployee =
-      this.employeeFormElement.employeeToEdit?.identifier ===
-      event.detail.employee.identifier;
-    if (isEditingDeletedEmployee) {
-      this.employeeFormElement.employeeToEdit = null;
-    }
-    this.showToast('Employee deleted successfully!');
-  }
-
-  private handleEmployeeEditRequest(
-    event: CustomEvent<{ employee: Employee }>,
-  ): void {
-    this.employeeFormElement.employeeToEdit = event.detail.employee;
-    this.scrollFormIntoView();
-  }
-
-  private handleFormCleared(): void {
-    this.employeeFormElement.employeeToEdit = null;
-  }
-
-  private handleAddEmployeeRequest(): void {
-    this.employeeFormElement.employeeToEdit = null;
-    this.scrollFormIntoView();
-  }
-
-  private handleToastClose(): void {
-    this.toastMessage = '';
-    window.clearTimeout(this.toastTimeoutIdentifier);
-  }
-
-  private scrollFormIntoView(): void {
-    this.employeeFormElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  private showToast(message: string): void {
-    this.toastMessage = message;
-    window.clearTimeout(this.toastTimeoutIdentifier);
-    this.toastTimeoutIdentifier = window.setTimeout(() => {
-      this.toastMessage = '';
-    }, 3000);
   }
 }
 

@@ -1,10 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import '../src/components/employee-table';
-import type { EmployeeTable } from '../src/components/employee-table';
-import type { Employee } from '../src/types/employee';
+import '../src/widgets/employee/employee-table';
+import type { EmployeeTable } from '../src/widgets/employee/employee-table';
+import type { Employee } from '../src/widgets/employee/employee.types';
 import type { UiInput } from '../src/ui/ui-input';
 import type { UiButton } from '../src/ui/ui-button';
 import type { UiDialog } from '../src/ui/ui-dialog';
+import type { UiToast } from '../src/ui/ui-toast';
 
 describe('EmployeeTable Component', () => {
   let tableElement: EmployeeTable;
@@ -303,6 +304,24 @@ describe('EmployeeTable Component', () => {
       expect(dialog?.open).toBe(false);
       expect(deletedDetail?.employee.identifier).toBe(1);
       expect(deletedDetail?.employee.fullName).toBe('Alice Johnson');
+    });
+
+    it('should display a success toast after confirming deletion', async () => {
+      tableElement.employees = sampleEmployees;
+      await tableElement.updateComplete;
+
+      const dialog = tableElement.shadowRoot?.querySelector<UiDialog>('ui-dialog');
+
+      const firstRow = tableElement.shadowRoot?.querySelector('.employee-row');
+      const deleteBtn = firstRow?.querySelectorAll<UiButton>('.action-buttons ui-button')?.[1];
+      deleteBtn?.click();
+      await tableElement.updateComplete;
+
+      dialog?.dispatchEvent(new CustomEvent('dialog-confirm', { bubbles: true, composed: true }));
+      await tableElement.updateComplete;
+
+      const toast = tableElement.shadowRoot?.querySelector<UiToast>('ui-toast');
+      expect(toast?.message).toBe('Employee deleted successfully!');
     });
   });
 });

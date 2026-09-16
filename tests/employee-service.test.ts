@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { EmployeeService } from '../src/services/employee-service';
-import type { Employee } from '../src/types/employee';
+import { EmployeeService } from '../src/widgets/employee/employee-service';
+import type { Employee } from '../src/widgets/employee/employee.types';
 
 describe('EmployeeService (CRUD Operations)', () => {
   let service: EmployeeService;

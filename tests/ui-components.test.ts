@@ -2,9 +2,11 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import '../src/ui/ui-button';
 import '../src/ui/ui-input';
 import '../src/ui/ui-dialog';
+import '../src/ui/ui-toast';
 import type { UiButton } from '../src/ui/ui-button';
 import type { UiInput } from '../src/ui/ui-input';
 import type { UiDialog } from '../src/ui/ui-dialog';
+import type { UiToast } from '../src/ui/ui-toast';
 
 describe('UI Primitives Components', () => {
   describe('UiButton Component', () => {
@@ -275,6 +277,64 @@ describe('UI Primitives Components', () => {
       confirmBtn?.click();
 
       expect(confirmSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('UiToast Component', () => {
+    let toastElement: UiToast;
+
+    beforeEach(async () => {
+      toastElement = document.createElement('ui-toast') as UiToast;
+      document.body.appendChild(toastElement);
+      await toastElement.updateComplete;
+    });
+
+    afterEach(() => {
+      toastElement.remove();
+    });
+
+    it('should render nothing when message is empty', () => {
+      const toast = toastElement.shadowRoot?.querySelector('.toast');
+      expect(toast).toBeNull();
+    });
+
+    it('should render the message when set', async () => {
+      toastElement.message = 'Saved successfully!';
+      await toastElement.updateComplete;
+
+      const toast = toastElement.shadowRoot?.querySelector('.toast');
+      expect(toast).not.toBeNull();
+      expect(toast?.textContent).toContain('Saved successfully!');
+    });
+
+    it('should emit toast-dismissed and stop rendering on close button click', async () => {
+      toastElement.message = 'Saved successfully!';
+      await toastElement.updateComplete;
+
+      const dismissSpy = vi.fn();
+      toastElement.addEventListener('toast-dismissed', dismissSpy);
+
+      const closeBtn = toastElement.shadowRoot?.querySelector<HTMLButtonElement>('.toast-close-button');
+      closeBtn?.click();
+
+      expect(dismissSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should emit toast-dismissed automatically after the configured duration', async () => {
+      vi.useFakeTimers();
+      try {
+        toastElement.durationMs = 1000;
+        toastElement.message = 'Auto dismiss me';
+        await toastElement.updateComplete;
+
+        const dismissSpy = vi.fn();
+        toastElement.addEventListener('toast-dismissed', dismissSpy);
+
+        vi.advanceTimersByTime(1000);
+        expect(dismissSpy).toHaveBeenCalledTimes(1);
+      } finally {
+        vi.useRealTimers();
+      }
     });
   });
 });

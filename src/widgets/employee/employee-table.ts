@@ -1,11 +1,12 @@
 import { LitElement, css, html } from 'lit';
 import type { TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import type { Employee } from '../types/employee';
-import { employeeService } from '../services/employee-service';
-import '../ui/ui-input';
-import { UI_BUTTON_VARIANT } from '../ui/ui-button';
-import '../ui/ui-dialog';
+import type { Employee } from './employee.types';
+import { employeeService } from './employee-service';
+import '../../ui/ui-input';
+import { UI_BUTTON_VARIANT } from '../../ui/ui-button';
+import '../../ui/ui-dialog';
+import '../../ui/ui-toast';
 
 @customElement('employee-table')
 export class EmployeeTable extends LitElement {
@@ -23,6 +24,9 @@ export class EmployeeTable extends LitElement {
 
   @state()
   private employeePendingDeletion: Employee | null = null;
+
+  @state()
+  private toastMessage = '';
 
   private readonly pageSize = 5;
   private unsubscribeService?: () => void;
@@ -177,6 +181,7 @@ export class EmployeeTable extends LitElement {
       ${this.renderTableToolbar()}
       ${this.renderTableBody(filteredEmployees)}
       ${this.renderDeleteConfirmationDialog()}
+      ${this.renderToast()}
     `;
   }
 
@@ -411,6 +416,15 @@ export class EmployeeTable extends LitElement {
     `;
   }
 
+  private renderToast(): TemplateResult {
+    return html`
+      <ui-toast
+        .message=${this.toastMessage}
+        @toast-dismissed=${this.handleToastDismissed}
+      ></ui-toast>
+    `;
+  }
+
   private computeFilteredEmployees(): Employee[] {
     const normalizedSearchTerm = this.searchTerm.trim().toLowerCase();
     if (normalizedSearchTerm === '') {
@@ -481,6 +495,7 @@ export class EmployeeTable extends LitElement {
         composed: true,
       }),
     );
+    this.showToast('Employee deleted successfully!');
   }
 
   private handleDeleteCancelled(): void {
@@ -507,6 +522,14 @@ export class EmployeeTable extends LitElement {
     this.dispatchEvent(
       new CustomEvent('employee-add-request', { bubbles: true, composed: true }),
     );
+  }
+
+  private showToast(message: string): void {
+    this.toastMessage = message;
+  }
+
+  private handleToastDismissed(): void {
+    this.toastMessage = '';
   }
 }
 

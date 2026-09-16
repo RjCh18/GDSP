@@ -1,10 +1,11 @@
 import { LitElement, css, html } from 'lit';
 import type { PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, state, queryAll } from 'lit/decorators.js';
-import type { Employee } from '../types/employee';
-import { employeeService } from '../services/employee-service';
-import { UiInput } from '../ui/ui-input';
-import { UI_BUTTON_VARIANT } from '../ui/ui-button';
+import type { Employee } from './employee.types';
+import { employeeService } from './employee-service';
+import { UiInput } from '../../ui/ui-input';
+import { UI_BUTTON_VARIANT } from '../../ui/ui-button';
+import '../../ui/ui-toast';
 
 const EMPLOYEE_FORM_FIELD = {
   FULL_NAME: 'fullName',
@@ -29,6 +30,9 @@ export class EmployeeForm extends LitElement {
 
   @state()
   private draftEmailAddress = '';
+
+  @state()
+  private toastMessage = '';
 
   @queryAll('ui-input')
   private inputElements!: NodeListOf<UiInput>;
@@ -70,6 +74,7 @@ export class EmployeeForm extends LitElement {
     return html`
       ${this.renderFormFields()}
       ${this.renderFormActions()}
+      ${this.renderToast()}
     `;
   }
 
@@ -132,6 +137,15 @@ export class EmployeeForm extends LitElement {
           Clear
         </ui-button>
       </div>
+    `;
+  }
+
+  private renderToast(): TemplateResult {
+    return html`
+      <ui-toast
+        .message=${this.toastMessage}
+        @toast-dismissed=${this.handleToastDismissed}
+      ></ui-toast>
     `;
   }
 
@@ -267,6 +281,9 @@ export class EmployeeForm extends LitElement {
         },
       ),
     );
+    this.showToast(
+      isNew ? 'Employee added successfully!' : 'Employee updated successfully!',
+    );
     this.employeeToEdit = null;
     this.clearFormFields();
   }
@@ -302,6 +319,14 @@ export class EmployeeForm extends LitElement {
       }
     }
     return allValid;
+  }
+
+  private showToast(message: string): void {
+    this.toastMessage = message;
+  }
+
+  private handleToastDismissed(): void {
+    this.toastMessage = '';
   }
 }
 

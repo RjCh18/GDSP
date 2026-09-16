@@ -1,4 +1,4 @@
-import type { Employee } from '../types/employee';
+import type { Employee } from './employee.types';
 
 export type EmployeeListener = (employees: Employee[]) => void;
 

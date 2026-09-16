@@ -1,9 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import '../src/components/employee-form';
-import type { EmployeeForm } from '../src/components/employee-form';
+import '../src/widgets/employee/employee-form';
+import type { EmployeeForm } from '../src/widgets/employee/employee-form';
 import type { UiInput } from '../src/ui/ui-input';
 import type { UiButton } from '../src/ui/ui-button';
-import type { Employee } from '../src/types/employee';
+import type { UiToast } from '../src/ui/ui-toast';
+import type { Employee } from '../src/widgets/employee/employee.types';
 
 describe('EmployeeForm Component & Validation Logic', () => {
   let formElement: EmployeeForm;
@@ -288,6 +289,42 @@ describe('EmployeeForm Component & Validation Logic', () => {
       expect(designationInput.value).toBe('');
       expect(emailInput.value).toBe('');
       expect(nameInput.errorMessage).toBe('');
+    });
+
+    it('should display a success toast after adding a new employee', async () => {
+      const { nameInput, departmentInput, emailInput } = getInputs();
+      const { saveButton } = getButtons();
+
+      await setInputValue(nameInput, 'New Hire');
+      await setInputValue(departmentInput, 'Engineering');
+      await setInputValue(emailInput, 'new.hire@example.com');
+
+      saveButton.click();
+      await formElement.updateComplete;
+
+      const toast = formElement.shadowRoot?.querySelector<UiToast>('ui-toast');
+      expect(toast).not.toBeNull();
+      expect(toast?.message).toBe('Employee added successfully!');
+    });
+
+    it('should display a success toast after updating an existing employee', async () => {
+      const employeeToEdit: Employee = {
+        identifier: 7,
+        fullName: 'Bruce Wayne',
+        department: 'Security',
+        designation: 'Director',
+        emailAddress: 'bruce@wayne.com',
+      };
+
+      formElement.employeeToEdit = employeeToEdit;
+      await formElement.updateComplete;
+
+      const { saveButton } = getButtons();
+      saveButton.click();
+      await formElement.updateComplete;
+
+      const toast = formElement.shadowRoot?.querySelector<UiToast>('ui-toast');
+      expect(toast?.message).toBe('Employee updated successfully!');
     });
 
     it('should correctly support editing and updating an employee with identifier 0', async () => {
