@@ -1,10 +1,13 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import '../src/employee-app';
 import type { EmployeeApp } from '../src/employee-app';
-import { employeeService } from '../src/services/employee-service';
-import type { Employee } from '../src/types/employee';
-import type { EmployeeForm } from '../src/components/employee-form';
-import type { EmployeeTable } from '../src/components/employee-table';
+import { employeeService } from '../src/widgets/employee/employee-service';
+import type { EmployeeWidget } from '../src/widgets/employee/employee-widget';
+import type { EmployeeForm } from '../src/widgets/employee/employee-form';
+import type { EmployeeTable } from '../src/widgets/employee/employee-table';
+import type { UiButton } from '../src/ui/ui-button';
+import type { UiInput } from '../src/ui/ui-input';
+import type { UiToast } from '../src/ui/ui-toast';
 
 describe('EmployeeApp Component (Shell & Integration)', () => {
   let appElement: EmployeeApp;
@@ -22,147 +25,64 @@ describe('EmployeeApp Component (Shell & Integration)', () => {
   });
 
   const getSubcomponents = () => {
-    const form = appElement.shadowRoot?.querySelector<EmployeeForm>('employee-form');
-    const table = appElement.shadowRoot?.querySelector<EmployeeTable>('employee-table');
+    const employeeWidget = appElement.shadowRoot?.querySelector<EmployeeWidget>('employee-widget');
     const header = appElement.shadowRoot?.querySelector('header.application-header');
     const eventsStrip = appElement.shadowRoot?.querySelector('footer.events-strip');
-    return { form, table, header, eventsStrip };
+    const form = employeeWidget?.shadowRoot?.querySelector<EmployeeForm>('employee-form');
+    const table = employeeWidget?.shadowRoot?.querySelector<EmployeeTable>('employee-table');
+    return { employeeWidget, header, eventsStrip, form, table };
   };
 
-  it('should render application header, form, table, and events strip', () => {
-    const { form, table, header, eventsStrip } = getSubcomponents();
+  it('should render application header, employee widget (with form and table), and events strip', () => {
+    const { employeeWidget, header, eventsStrip, form, table } = getSubcomponents();
 
     expect(header).not.toBeNull();
     expect(header?.textContent).toContain('Employee Management');
+    expect(employeeWidget).not.toBeNull();
     expect(form).not.toBeNull();
     expect(table).not.toBeNull();
     expect(eventsStrip).not.toBeNull();
   });
 
-  describe('Shell Event Coordination & Notifications', () => {
-    it('should handle employee-added event: show toast and update events strip', async () => {
-      const { form } = getSubcomponents();
-
-      const newEmployee: Employee = {
-        identifier: 1,
-        fullName: 'Alexander Fleming',
-        department: 'Medicine',
-        designation: 'Researcher',
-        emailAddress: 'alex@lab.org',
-      };
-
-      form?.dispatchEvent(
-        new CustomEvent<{ employee: Employee }>('employee-added', {
-          detail: { employee: newEmployee },
-          bubbles: true,
-          composed: true,
-        }),
-      );
-      await appElement.updateComplete;
-
-      // Check toast
-      const toast = appElement.shadowRoot?.querySelector('.toast');
-      expect(toast).not.toBeNull();
-      expect(toast?.textContent).toContain('Employee added successfully!');
-
-      // Check events strip
-      const lastEvent = appElement.shadowRoot?.querySelector('.last-event');
-      expect(lastEvent?.textContent).toContain('employee-added');
-    });
-
-    it('should handle employee-updated event: show toast and update events strip', async () => {
-      const { form } = getSubcomponents();
-
-      const updatedEmployee: Employee = {
-        identifier: 1,
-        fullName: 'Marie Curie',
-        department: 'Physics',
-        designation: 'Nobel Laureate',
-        emailAddress: 'marie@curie.org',
-      };
-
-      form?.dispatchEvent(
-        new CustomEvent<{ employee: Employee }>('employee-updated', {
-          detail: { employee: updatedEmployee },
-          bubbles: true,
-          composed: true,
-        }),
-      );
-      await appElement.updateComplete;
-
-      // Check toast
-      const toast = appElement.shadowRoot?.querySelector('.toast');
-      expect(toast?.textContent).toContain('Employee updated successfully!');
-
-      // Check events strip
-      const lastEvent = appElement.shadowRoot?.querySelector('.last-event');
-      expect(lastEvent?.textContent).toContain('employee-updated');
-    });
-
-    it('should handle employee-deleted event: show toast, update events strip, and clear edit state if matched', async () => {
+  describe('End-to-End Widget Coordination', () => {
+    it('should add an employee through the form, show a toast on the form, and update the events strip', async () => {
       const { form, table } = getSubcomponents();
 
-      const deletedEmployee: Employee = {
-        identifier: 1,
-        fullName: 'Nikola Tesla',
-        department: 'Invention',
-        designation: 'Engineer',
-        emailAddress: 'nikola@tesla.org',
+      const nameInput = form?.shadowRoot?.querySelectorAll<UiInput>('ui-input')[0];
+      const departmentInput = form?.shadowRoot?.querySelectorAll<UiInput>('ui-input')[1];
+      const emailInput = form?.shadowRoot?.querySelectorAll<UiInput>('ui-input')[3];
+      const saveButton = form?.shadowRoot?.querySelectorAll<UiButton>('ui-button')[0];
+
+      const setValue = async (input: UiInput | undefined, value: string) => {
+        if (!input) {
+          return;
+        }
+        input.value = value;
+        input.dispatchEvent(
+          new CustomEvent('value-changed', {
+            detail: { name: input.name, value },
+            bubbles: true,
+            composed: true,
+          }),
+        );
+        await form?.updateComplete;
       };
 
-      if (form) {
-        form.employeeToEdit = deletedEmployee;
-      }
+      await setValue(nameInput, 'Alexander Fleming');
+      await setValue(departmentInput, 'Medicine');
+      await setValue(emailInput, 'alex@lab.org');
 
-      table?.dispatchEvent(
-        new CustomEvent<{ employee: Employee }>('employee-deleted', {
-          detail: { employee: deletedEmployee },
-          bubbles: true,
-          composed: true,
-        }),
-      );
+      saveButton?.click();
       await appElement.updateComplete;
 
-      // Check toast
-      const toast = appElement.shadowRoot?.querySelector('.toast');
-      expect(toast?.textContent).toContain('Employee deleted successfully!');
+      const toast = form?.shadowRoot?.querySelector<UiToast>('ui-toast');
+      expect(toast?.message).toBe('Employee added successfully!');
 
-      // Check event strip
       const lastEvent = appElement.shadowRoot?.querySelector('.last-event');
-      expect(lastEvent?.textContent).toContain('employee-deleted');
+      expect(lastEvent?.textContent).toContain('employee-added');
 
-      // Form edit state should be cleared
-      expect(form?.employeeToEdit).toBeNull();
-    });
-
-    it('should dismiss toast on close button click', async () => {
-      const { form } = getSubcomponents();
-      form?.dispatchEvent(
-        new CustomEvent<{ employee: Employee }>('employee-added', {
-          detail: {
-            employee: {
-              identifier: 1,
-              fullName: 'Test Person',
-              department: 'Test Dept',
-              designation: 'Tester',
-              emailAddress: 'test@test.com',
-            },
-          },
-          bubbles: true,
-          composed: true,
-        }),
-      );
-      await appElement.updateComplete;
-
-      let toast = appElement.shadowRoot?.querySelector('.toast');
-      expect(toast).not.toBeNull();
-
-      const closeBtn = toast?.querySelector<HTMLButtonElement>('.toast-close-button');
-      closeBtn?.click();
-      await appElement.updateComplete;
-
-      toast = appElement.shadowRoot?.querySelector('.toast');
-      expect(toast).toBeNull();
+      const rows = table?.shadowRoot?.querySelectorAll('.employee-row');
+      expect(rows?.[0]?.textContent).toContain('Alexander Fleming');
     });
 
     it('should route edit request from table to form component and reset on clear', async () => {
@@ -174,22 +94,55 @@ describe('EmployeeApp Component (Shell & Integration)', () => {
       });
 
       const { form, table } = getSubcomponents();
+      await table?.updateComplete;
 
-      // Select for edit
-      table?.dispatchEvent(
-        new CustomEvent<{ employee: Employee }>('employee-edit-request', {
-          detail: { employee: created },
-          bubbles: true,
-          composed: true,
-        }),
-      );
+      const editBtn = table?.shadowRoot
+        ?.querySelector('.employee-row')
+        ?.querySelectorAll<UiButton>('.action-buttons ui-button')[0];
+      editBtn?.click();
       await appElement.updateComplete;
+
       expect(form?.employeeToEdit).toEqual(created);
 
-      // Emit form-cleared
-      form?.dispatchEvent(new CustomEvent('form-cleared', { bubbles: true, composed: true }));
+      const clearButton = form?.shadowRoot?.querySelectorAll<UiButton>('ui-button')[1];
+      clearButton?.click();
       await appElement.updateComplete;
+
       expect(form?.employeeToEdit).toBeNull();
+    });
+
+    it('should show a toast on the table and clear the form edit state when the edited employee is deleted', async () => {
+      const created = employeeService.add({
+        fullName: 'Nikola Tesla',
+        department: 'Invention',
+        designation: 'Engineer',
+        emailAddress: 'nikola@tesla.org',
+      });
+
+      const { form, table } = getSubcomponents();
+      await table?.updateComplete;
+      if (form) {
+        form.employeeToEdit = created;
+      }
+      await appElement.updateComplete;
+
+      const deleteBtn = table?.shadowRoot
+        ?.querySelector('.employee-row')
+        ?.querySelectorAll<UiButton>('.action-buttons ui-button')[1];
+      deleteBtn?.click();
+      await appElement.updateComplete;
+
+      const dialog = table?.shadowRoot?.querySelector('ui-dialog');
+      dialog?.dispatchEvent(new CustomEvent('dialog-confirm', { bubbles: true, composed: true }));
+      await appElement.updateComplete;
+
+      const toast = table?.shadowRoot?.querySelector<UiToast>('ui-toast');
+      expect(toast?.message).toBe('Employee deleted successfully!');
+
+      expect(form?.employeeToEdit).toBeNull();
+
+      const lastEvent = appElement.shadowRoot?.querySelector('.last-event');
+      expect(lastEvent?.textContent).toContain('employee-deleted');
     });
   });
 });

@@ -58,7 +58,7 @@ var e = globalThis, t = e.ShadowRoot && (e.ShadyCSS === void 0 || e.ShadyCSS.nat
 		}
 		return n;
 	}
-}, h = (e, t) => !l(e, t), g = {
+}, h = (e, t) => !l(e, t), oe = {
 	attribute: !0,
 	type: String,
 	converter: m,
@@ -67,14 +67,14 @@ var e = globalThis, t = e.ShadowRoot && (e.ShadyCSS === void 0 || e.ShadyCSS.nat
 	hasChanged: h
 };
 Symbol.metadata ??= Symbol("metadata"), f.litPropertyMetadata ??= /* @__PURE__ */ new WeakMap();
-var _ = class extends HTMLElement {
+var g = class extends HTMLElement {
 	static addInitializer(e) {
 		this._$Ei(), (this.l ??= []).push(e);
 	}
 	static get observedAttributes() {
 		return this.finalize(), this._$Eh && [...this._$Eh.keys()];
 	}
-	static createProperty(e, t = g) {
+	static createProperty(e, t = oe) {
 		if (t.state && (t.attribute = !1), this._$Ei(), this.prototype.hasOwnProperty(e) && ((t = Object.create(t)).wrapped = !0), this.elementProperties.set(e, t), !t.noAccessor) {
 			let n = Symbol(), r = this.getPropertyDescriptor(e, n, t);
 			r !== void 0 && u(this.prototype, e, r);
@@ -100,7 +100,7 @@ var _ = class extends HTMLElement {
 		};
 	}
 	static getPropertyOptions(e) {
-		return this.elementProperties.get(e) ?? g;
+		return this.elementProperties.get(e) ?? oe;
 	}
 	static _$Ei() {
 		if (this.hasOwnProperty(p("elementProperties"))) return;
@@ -251,89 +251,89 @@ var _ = class extends HTMLElement {
 	updated(e) {}
 	firstUpdated(e) {}
 };
-_.elementStyles = [], _.shadowRootOptions = { mode: "open" }, _[p("elementProperties")] = /* @__PURE__ */ new Map(), _[p("finalized")] = /* @__PURE__ */ new Map(), ae?.({ ReactiveElement: _ }), (f.reactiveElementVersions ??= []).push("2.1.2");
+g.elementStyles = [], g.shadowRootOptions = { mode: "open" }, g[p("elementProperties")] = /* @__PURE__ */ new Map(), g[p("finalized")] = /* @__PURE__ */ new Map(), ae?.({ ReactiveElement: g }), (f.reactiveElementVersions ??= []).push("2.1.2");
 //#endregion
 //#region node_modules/lit-html/lit-html.js
-var v = globalThis, oe = (e) => e, y = v.trustedTypes, se = y ? y.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, ce = "$lit$", b = `lit$${Math.random().toFixed(9).slice(2)}$`, x = "?" + b, le = `<${x}>`, S = document, C = () => S.createComment(""), w = (e) => e === null || typeof e != "object" && typeof e != "function", T = Array.isArray, ue = (e) => T(e) || typeof e?.[Symbol.iterator] == "function", E = "[ 	\n\f\r]", D = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, O = /-->/g, k = />/g, A = RegExp(`>|${E}(?:([^\\s"'>=/]+)(${E}*=${E}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), de = /'/g, fe = /"/g, pe = /^(?:script|style|textarea|title)$/i, j = ((e) => (t, ...n) => ({
+var _ = globalThis, se = (e) => e, v = _.trustedTypes, ce = v ? v.createPolicy("lit-html", { createHTML: (e) => e }) : void 0, le = "$lit$", y = `lit$${Math.random().toFixed(9).slice(2)}$`, ue = "?" + y, de = `<${ue}>`, b = document, x = () => b.createComment(""), S = (e) => e === null || typeof e != "object" && typeof e != "function", C = Array.isArray, fe = (e) => C(e) || typeof e?.[Symbol.iterator] == "function", w = "[ 	\n\f\r]", T = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, pe = /-->/g, me = />/g, E = RegExp(`>|${w}(?:([^\\s"'>=/]+)(${w}*=${w}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`, "g"), he = /'/g, ge = /"/g, _e = /^(?:script|style|textarea|title)$/i, D = ((e) => (t, ...n) => ({
 	_$litType$: e,
 	strings: t,
 	values: n
-}))(1), M = Symbol.for("lit-noChange"), N = Symbol.for("lit-nothing"), P = /* @__PURE__ */ new WeakMap(), F = S.createTreeWalker(S, 129);
-function I(e, t) {
-	if (!T(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
-	return se === void 0 ? t : se.createHTML(t);
+}))(1), O = Symbol.for("lit-noChange"), k = Symbol.for("lit-nothing"), ve = /* @__PURE__ */ new WeakMap(), A = b.createTreeWalker(b, 129);
+function ye(e, t) {
+	if (!C(e) || !e.hasOwnProperty("raw")) throw Error("invalid template strings array");
+	return ce === void 0 ? t : ce.createHTML(t);
 }
-var me = (e, t) => {
-	let n = e.length - 1, r = [], i, a = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", o = D;
+var be = (e, t) => {
+	let n = e.length - 1, r = [], i, a = t === 2 ? "<svg>" : t === 3 ? "<math>" : "", o = T;
 	for (let t = 0; t < n; t++) {
 		let n = e[t], s, c, l = -1, u = 0;
-		for (; u < n.length && (o.lastIndex = u, c = o.exec(n), c !== null);) u = o.lastIndex, o === D ? c[1] === "!--" ? o = O : c[1] === void 0 ? c[2] === void 0 ? c[3] !== void 0 && (o = A) : (pe.test(c[2]) && (i = RegExp("</" + c[2], "g")), o = A) : o = k : o === A ? c[0] === ">" ? (o = i ?? D, l = -1) : c[1] === void 0 ? l = -2 : (l = o.lastIndex - c[2].length, s = c[1], o = c[3] === void 0 ? A : c[3] === "\"" ? fe : de) : o === fe || o === de ? o = A : o === O || o === k ? o = D : (o = A, i = void 0);
-		let d = o === A && e[t + 1].startsWith("/>") ? " " : "";
-		a += o === D ? n + le : l >= 0 ? (r.push(s), n.slice(0, l) + ce + n.slice(l) + b + d) : n + b + (l === -2 ? t : d);
+		for (; u < n.length && (o.lastIndex = u, c = o.exec(n), c !== null);) u = o.lastIndex, o === T ? c[1] === "!--" ? o = pe : c[1] === void 0 ? c[2] === void 0 ? c[3] !== void 0 && (o = E) : (_e.test(c[2]) && (i = RegExp("</" + c[2], "g")), o = E) : o = me : o === E ? c[0] === ">" ? (o = i ?? T, l = -1) : c[1] === void 0 ? l = -2 : (l = o.lastIndex - c[2].length, s = c[1], o = c[3] === void 0 ? E : c[3] === "\"" ? ge : he) : o === ge || o === he ? o = E : o === pe || o === me ? o = T : (o = E, i = void 0);
+		let d = o === E && e[t + 1].startsWith("/>") ? " " : "";
+		a += o === T ? n + de : l >= 0 ? (r.push(s), n.slice(0, l) + le + n.slice(l) + y + d) : n + y + (l === -2 ? t : d);
 	}
-	return [I(e, a + (e[n] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), r];
-}, L = class e {
+	return [ye(e, a + (e[n] || "<?>") + (t === 2 ? "</svg>" : t === 3 ? "</math>" : "")), r];
+}, j = class e {
 	constructor({ strings: t, _$litType$: n }, r) {
 		let i;
 		this.parts = [];
-		let a = 0, o = 0, s = t.length - 1, c = this.parts, [l, u] = me(t, n);
-		if (this.el = e.createElement(l, r), F.currentNode = this.el.content, n === 2 || n === 3) {
+		let a = 0, o = 0, s = t.length - 1, c = this.parts, [l, u] = be(t, n);
+		if (this.el = e.createElement(l, r), A.currentNode = this.el.content, n === 2 || n === 3) {
 			let e = this.el.content.firstChild;
 			e.replaceWith(...e.childNodes);
 		}
-		for (; (i = F.nextNode()) !== null && c.length < s;) {
+		for (; (i = A.nextNode()) !== null && c.length < s;) {
 			if (i.nodeType === 1) {
-				if (i.hasAttributes()) for (let e of i.getAttributeNames()) if (e.endsWith(ce)) {
-					let t = u[o++], n = i.getAttribute(e).split(b), r = /([.?@])?(.*)/.exec(t);
+				if (i.hasAttributes()) for (let e of i.getAttributeNames()) if (e.endsWith(le)) {
+					let t = u[o++], n = i.getAttribute(e).split(y), r = /([.?@])?(.*)/.exec(t);
 					c.push({
 						type: 1,
 						index: a,
 						name: r[2],
 						strings: n,
-						ctor: r[1] === "." ? ge : r[1] === "?" ? _e : r[1] === "@" ? ve : B
+						ctor: r[1] === "." ? Se : r[1] === "?" ? Ce : r[1] === "@" ? we : P
 					}), i.removeAttribute(e);
-				} else e.startsWith(b) && (c.push({
+				} else e.startsWith(y) && (c.push({
 					type: 6,
 					index: a
 				}), i.removeAttribute(e));
-				if (pe.test(i.tagName)) {
-					let e = i.textContent.split(b), t = e.length - 1;
+				if (_e.test(i.tagName)) {
+					let e = i.textContent.split(y), t = e.length - 1;
 					if (t > 0) {
-						i.textContent = y ? y.emptyScript : "";
-						for (let n = 0; n < t; n++) i.append(e[n], C()), F.nextNode(), c.push({
+						i.textContent = v ? v.emptyScript : "";
+						for (let n = 0; n < t; n++) i.append(e[n], x()), A.nextNode(), c.push({
 							type: 2,
 							index: ++a
 						});
-						i.append(e[t], C());
+						i.append(e[t], x());
 					}
 				}
 			} else if (i.nodeType === 8) {
-				if (i.data === x) c.push({
+				if (i.data === ue) c.push({
 					type: 2,
 					index: a
 				});
 				else {
 					let e = -1;
-					for (; (e = i.data.indexOf(b, e + 1)) !== -1;) c.push({
+					for (; (e = i.data.indexOf(y, e + 1)) !== -1;) c.push({
 						type: 7,
 						index: a
-					}), e += b.length - 1;
+					}), e += y.length - 1;
 				}
 			}
 			a++;
 		}
 	}
 	static createElement(e, t) {
-		let n = S.createElement("template");
+		let n = b.createElement("template");
 		return n.innerHTML = e, n;
 	}
 };
-function R(e, t, n = e, r) {
-	if (t === M) return t;
-	let i = r === void 0 ? n._$Cl : n._$Co?.[r], a = w(t) ? void 0 : t._$litDirective$;
-	return i?.constructor !== a && (i?._$AO?.(!1), a === void 0 ? i = void 0 : (i = new a(e), i._$AT(e, n, r)), r === void 0 ? n._$Cl = i : (n._$Co ??= [])[r] = i), i !== void 0 && (t = R(e, i._$AS(e, t.values), i, r)), t;
+function M(e, t, n = e, r) {
+	if (t === O) return t;
+	let i = r === void 0 ? n._$Cl : n._$Co?.[r], a = S(t) ? void 0 : t._$litDirective$;
+	return i?.constructor !== a && (i?._$AO?.(!1), a === void 0 ? i = void 0 : (i = new a(e), i._$AT(e, n, r)), r === void 0 ? n._$Cl = i : (n._$Co ??= [])[r] = i), i !== void 0 && (t = M(e, i._$AS(e, t.values), i, r)), t;
 }
-var he = class {
+var xe = class {
 	constructor(e, t) {
 		this._$AV = [], this._$AN = void 0, this._$AD = e, this._$AM = t;
 	}
@@ -344,28 +344,28 @@ var he = class {
 		return this._$AM._$AU;
 	}
 	u(e) {
-		let { el: { content: t }, parts: n } = this._$AD, r = (e?.creationScope ?? S).importNode(t, !0);
-		F.currentNode = r;
-		let i = F.nextNode(), a = 0, o = 0, s = n[0];
+		let { el: { content: t }, parts: n } = this._$AD, r = (e?.creationScope ?? b).importNode(t, !0);
+		A.currentNode = r;
+		let i = A.nextNode(), a = 0, o = 0, s = n[0];
 		for (; s !== void 0;) {
 			if (a === s.index) {
 				let t;
-				s.type === 2 ? t = new z(i, i.nextSibling, this, e) : s.type === 1 ? t = new s.ctor(i, s.name, s.strings, this, e) : s.type === 6 && (t = new ye(i, this, e)), this._$AV.push(t), s = n[++o];
+				s.type === 2 ? t = new N(i, i.nextSibling, this, e) : s.type === 1 ? t = new s.ctor(i, s.name, s.strings, this, e) : s.type === 6 && (t = new Te(i, this, e)), this._$AV.push(t), s = n[++o];
 			}
-			a !== s?.index && (i = F.nextNode(), a++);
+			a !== s?.index && (i = A.nextNode(), a++);
 		}
-		return F.currentNode = S, r;
+		return A.currentNode = b, r;
 	}
 	p(e) {
 		let t = 0;
 		for (let n of this._$AV) n !== void 0 && (n.strings === void 0 ? n._$AI(e[t]) : (n._$AI(e, n, t), t += n.strings.length - 2)), t++;
 	}
-}, z = class e {
+}, N = class e {
 	get _$AU() {
 		return this._$AM?._$AU ?? this._$Cv;
 	}
 	constructor(e, t, n, r) {
-		this.type = 2, this._$AH = N, this._$AN = void 0, this._$AA = e, this._$AB = t, this._$AM = n, this.options = r, this._$Cv = r?.isConnected ?? !0;
+		this.type = 2, this._$AH = k, this._$AN = void 0, this._$AA = e, this._$AB = t, this._$AM = n, this.options = r, this._$Cv = r?.isConnected ?? !0;
 	}
 	get parentNode() {
 		let e = this._$AA.parentNode, t = this._$AM;
@@ -378,7 +378,7 @@ var he = class {
 		return this._$AB;
 	}
 	_$AI(e, t = this) {
-		e = R(this, e, t), w(e) ? e === N || e == null || e === "" ? (this._$AH !== N && this._$AR(), this._$AH = N) : e !== this._$AH && e !== M && this._(e) : e._$litType$ === void 0 ? e.nodeType === void 0 ? ue(e) ? this.k(e) : this._(e) : this.T(e) : this.$(e);
+		e = M(this, e, t), S(e) ? e === k || e == null || e === "" ? (this._$AH !== k && this._$AR(), this._$AH = k) : e !== this._$AH && e !== O && this._(e) : e._$litType$ === void 0 ? e.nodeType === void 0 ? fe(e) ? this.k(e) : this._(e) : this.T(e) : this.$(e);
 	}
 	O(e) {
 		return this._$AA.parentNode.insertBefore(e, this._$AB);
@@ -387,36 +387,36 @@ var he = class {
 		this._$AH !== e && (this._$AR(), this._$AH = this.O(e));
 	}
 	_(e) {
-		this._$AH !== N && w(this._$AH) ? this._$AA.nextSibling.data = e : this.T(S.createTextNode(e)), this._$AH = e;
+		this._$AH !== k && S(this._$AH) ? this._$AA.nextSibling.data = e : this.T(b.createTextNode(e)), this._$AH = e;
 	}
 	$(e) {
-		let { values: t, _$litType$: n } = e, r = typeof n == "number" ? this._$AC(e) : (n.el === void 0 && (n.el = L.createElement(I(n.h, n.h[0]), this.options)), n);
+		let { values: t, _$litType$: n } = e, r = typeof n == "number" ? this._$AC(e) : (n.el === void 0 && (n.el = j.createElement(ye(n.h, n.h[0]), this.options)), n);
 		if (this._$AH?._$AD === r) this._$AH.p(t);
 		else {
-			let e = new he(r, this), n = e.u(this.options);
+			let e = new xe(r, this), n = e.u(this.options);
 			e.p(t), this.T(n), this._$AH = e;
 		}
 	}
 	_$AC(e) {
-		let t = P.get(e.strings);
-		return t === void 0 && P.set(e.strings, t = new L(e)), t;
+		let t = ve.get(e.strings);
+		return t === void 0 && ve.set(e.strings, t = new j(e)), t;
 	}
 	k(t) {
-		T(this._$AH) || (this._$AH = [], this._$AR());
+		C(this._$AH) || (this._$AH = [], this._$AR());
 		let n = this._$AH, r, i = 0;
-		for (let a of t) i === n.length ? n.push(r = new e(this.O(C()), this.O(C()), this, this.options)) : r = n[i], r._$AI(a), i++;
+		for (let a of t) i === n.length ? n.push(r = new e(this.O(x()), this.O(x()), this, this.options)) : r = n[i], r._$AI(a), i++;
 		i < n.length && (this._$AR(r && r._$AB.nextSibling, i), n.length = i);
 	}
 	_$AR(e = this._$AA.nextSibling, t) {
 		for (this._$AP?.(!1, !0, t); e !== this._$AB;) {
-			let t = oe(e).nextSibling;
-			oe(e).remove(), e = t;
+			let t = se(e).nextSibling;
+			se(e).remove(), e = t;
 		}
 	}
 	setConnected(e) {
 		this._$AM === void 0 && (this._$Cv = e, this._$AP?.(e));
 	}
-}, B = class {
+}, P = class {
 	get tagName() {
 		return this.element.tagName;
 	}
@@ -424,47 +424,47 @@ var he = class {
 		return this._$AM._$AU;
 	}
 	constructor(e, t, n, r, i) {
-		this.type = 1, this._$AH = N, this._$AN = void 0, this.element = e, this.name = t, this._$AM = r, this.options = i, n.length > 2 || n[0] !== "" || n[1] !== "" ? (this._$AH = Array(n.length - 1).fill(/* @__PURE__ */ new String()), this.strings = n) : this._$AH = N;
+		this.type = 1, this._$AH = k, this._$AN = void 0, this.element = e, this.name = t, this._$AM = r, this.options = i, n.length > 2 || n[0] !== "" || n[1] !== "" ? (this._$AH = Array(n.length - 1).fill(/* @__PURE__ */ new String()), this.strings = n) : this._$AH = k;
 	}
 	_$AI(e, t = this, n, r) {
 		let i = this.strings, a = !1;
-		if (i === void 0) e = R(this, e, t, 0), a = !w(e) || e !== this._$AH && e !== M, a && (this._$AH = e);
+		if (i === void 0) e = M(this, e, t, 0), a = !S(e) || e !== this._$AH && e !== O, a && (this._$AH = e);
 		else {
 			let r = e, o, s;
-			for (e = i[0], o = 0; o < i.length - 1; o++) s = R(this, r[n + o], t, o), s === M && (s = this._$AH[o]), a ||= !w(s) || s !== this._$AH[o], s === N ? e = N : e !== N && (e += (s ?? "") + i[o + 1]), this._$AH[o] = s;
+			for (e = i[0], o = 0; o < i.length - 1; o++) s = M(this, r[n + o], t, o), s === O && (s = this._$AH[o]), a ||= !S(s) || s !== this._$AH[o], s === k ? e = k : e !== k && (e += (s ?? "") + i[o + 1]), this._$AH[o] = s;
 		}
 		a && !r && this.j(e);
 	}
 	j(e) {
-		e === N ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, e ?? "");
+		e === k ? this.element.removeAttribute(this.name) : this.element.setAttribute(this.name, e ?? "");
 	}
-}, ge = class extends B {
+}, Se = class extends P {
 	constructor() {
 		super(...arguments), this.type = 3;
 	}
 	j(e) {
-		this.element[this.name] = e === N ? void 0 : e;
+		this.element[this.name] = e === k ? void 0 : e;
 	}
-}, _e = class extends B {
+}, Ce = class extends P {
 	constructor() {
 		super(...arguments), this.type = 4;
 	}
 	j(e) {
-		this.element.toggleAttribute(this.name, !!e && e !== N);
+		this.element.toggleAttribute(this.name, !!e && e !== k);
 	}
-}, ve = class extends B {
+}, we = class extends P {
 	constructor(e, t, n, r, i) {
 		super(e, t, n, r, i), this.type = 5;
 	}
 	_$AI(e, t = this) {
-		if ((e = R(this, e, t, 0) ?? N) === M) return;
-		let n = this._$AH, r = e === N && n !== N || e.capture !== n.capture || e.once !== n.once || e.passive !== n.passive, i = e !== N && (n === N || r);
+		if ((e = M(this, e, t, 0) ?? k) === O) return;
+		let n = this._$AH, r = e === k && n !== k || e.capture !== n.capture || e.once !== n.once || e.passive !== n.passive, i = e !== k && (n === k || r);
 		r && this.element.removeEventListener(this.name, this, n), i && this.element.addEventListener(this.name, this, e), this._$AH = e;
 	}
 	handleEvent(e) {
 		typeof this._$AH == "function" ? this._$AH.call(this.options?.host ?? this.element, e) : this._$AH.handleEvent(e);
 	}
-}, ye = class {
+}, Te = class {
 	constructor(e, t, n) {
 		this.element = e, this.type = 6, this._$AN = void 0, this._$AM = t, this.options = n;
 	}
@@ -472,18 +472,18 @@ var he = class {
 		return this._$AM._$AU;
 	}
 	_$AI(e) {
-		R(this, e);
+		M(this, e);
 	}
-}, be = v.litHtmlPolyfillSupport;
-be?.(L, z), (v.litHtmlVersions ??= []).push("3.3.3");
-var xe = (e, t, n) => {
+}, Ee = _.litHtmlPolyfillSupport;
+Ee?.(j, N), (_.litHtmlVersions ??= []).push("3.3.3");
+var De = (e, t, n) => {
 	let r = n?.renderBefore ?? t, i = r._$litPart$;
 	if (i === void 0) {
 		let e = n?.renderBefore ?? null;
-		r._$litPart$ = i = new z(t.insertBefore(C(), e), e, void 0, n ?? {});
+		r._$litPart$ = i = new N(t.insertBefore(x(), e), e, void 0, n ?? {});
 	}
 	return i._$AI(e), i;
-}, V = globalThis, H = class extends _ {
+}, F = globalThis, I = class extends g {
 	constructor() {
 		super(...arguments), this.renderOptions = { host: this }, this._$Do = void 0;
 	}
@@ -493,7 +493,7 @@ var xe = (e, t, n) => {
 	}
 	update(e) {
 		let t = this.render();
-		this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(e), this._$Do = xe(t, this.renderRoot, this.renderOptions);
+		this.hasUpdated || (this.renderOptions.isConnected = this.isConnected), super.update(e), this._$Do = De(t, this.renderRoot, this.renderOptions);
 	}
 	connectedCallback() {
 		super.connectedCallback(), this._$Do?.setConnected(!0);
@@ -502,25 +502,25 @@ var xe = (e, t, n) => {
 		super.disconnectedCallback(), this._$Do?.setConnected(!1);
 	}
 	render() {
-		return M;
+		return O;
 	}
 };
-H._$litElement$ = !0, H.finalized = !0, V.litElementHydrateSupport?.({ LitElement: H });
-var Se = V.litElementPolyfillSupport;
-Se?.({ LitElement: H }), (V.litElementVersions ??= []).push("4.2.2");
+I._$litElement$ = !0, I.finalized = !0, F.litElementHydrateSupport?.({ LitElement: I });
+var Oe = F.litElementPolyfillSupport;
+Oe?.({ LitElement: I }), (F.litElementVersions ??= []).push("4.2.2");
 //#endregion
 //#region node_modules/@lit/reactive-element/decorators/custom-element.js
-var U = (e) => (t, n) => {
+var L = (e) => (t, n) => {
 	n === void 0 ? customElements.define(e, t) : n.addInitializer(() => {
 		customElements.define(e, t);
 	});
-}, Ce = {
+}, ke = {
 	attribute: !0,
 	type: String,
 	converter: m,
 	reflect: !1,
 	hasChanged: h
-}, we = (e = Ce, t, n) => {
+}, Ae = (e = ke, t, n) => {
 	let { kind: r, metadata: i } = n, a = globalThis.litPropertyMetadata.get(i);
 	if (a === void 0 && globalThis.litPropertyMetadata.set(i, a = /* @__PURE__ */ new Map()), r === "setter" && ((e = Object.create(e)).wrapped = !0), a.set(n.name, e), r === "accessor") {
 		let { name: r } = n;
@@ -543,16 +543,16 @@ var U = (e) => (t, n) => {
 	}
 	throw Error("Unsupported decorator location: " + r);
 };
-function W(e) {
-	return (t, n) => typeof n == "object" ? we(e, t, n) : ((e, t, n) => {
+function R(e) {
+	return (t, n) => typeof n == "object" ? Ae(e, t, n) : ((e, t, n) => {
 		let r = t.hasOwnProperty(n);
 		return t.constructor.createProperty(n, e), r ? Object.getOwnPropertyDescriptor(t, n) : void 0;
 	})(e, t, n);
 }
 //#endregion
 //#region node_modules/@lit/reactive-element/decorators/state.js
-function G(e) {
-	return W({
+function z(e) {
+	return R({
 		...e,
 		state: !0,
 		attribute: !1
@@ -560,13 +560,48 @@ function G(e) {
 }
 //#endregion
 //#region node_modules/@lit/reactive-element/decorators/base.js
-var Te = (e, t, n) => (n.configurable = !0, n.enumerable = !0, Reflect.decorate && typeof t != "object" && Object.defineProperty(e, t, n), n), Ee;
-function De(e) {
-	return (t, n) => Te(t, n, { get() {
-		return (this.renderRoot ?? (Ee ??= document.createDocumentFragment())).querySelectorAll(e);
+var B = (e, t, n) => (n.configurable = !0, n.enumerable = !0, Reflect.decorate && typeof t != "object" && Object.defineProperty(e, t, n), n);
+//#endregion
+//#region node_modules/@lit/reactive-element/decorators/query.js
+function je(e, t) {
+	return (n, r, i) => {
+		let a = (t) => t.renderRoot?.querySelector(e) ?? null;
+		if (t) {
+			let { get: e, set: t } = typeof r == "object" ? n : i ?? (() => {
+				let e = Symbol();
+				return {
+					get() {
+						return this[e];
+					},
+					set(t) {
+						this[e] = t;
+					}
+				};
+			})();
+			return B(n, r, { get() {
+				let n = e.call(this);
+				return n === void 0 && (n = a(this), (n !== null || this.hasUpdated) && t.call(this, n)), n;
+			} });
+		}
+		return B(n, r, { get() {
+			return a(this);
+		} });
+	};
+}
+//#endregion
+//#region node_modules/@lit/reactive-element/decorators/query-all.js
+var Me;
+function Ne(e) {
+	return (t, n) => B(t, n, { get() {
+		return (this.renderRoot ?? (Me ??= document.createDocumentFragment())).querySelectorAll(e);
 	} });
 }
-var K = new class {
+//#endregion
+//#region src/widgets/employee/employee-service.ts
+function Pe(e) {
+	return "identifier" in e && typeof e.identifier == "number";
+}
+var Fe = class {
 	constructor(e = []) {
 		this.employees = [], this.listeners = /* @__PURE__ */ new Set(), this.employees = [...e];
 	}
@@ -596,7 +631,7 @@ var K = new class {
 			identifier: t,
 			fullName: e.fullName,
 			department: e.department,
-			designation: e.designation || "",
+			designation: e.designation ?? "",
 			emailAddress: e.emailAddress
 		};
 		return this.employees = [...this.employees, n], this.notify(), n;
@@ -611,7 +646,7 @@ var K = new class {
 		return t ? (this.employees = this.employees.filter((t) => t.identifier !== e), this.notify(), t) : null;
 	}
 	save(e, t) {
-		return (t === void 0 ? "identifier" in e && typeof e.identifier == "number" && this.employees.some((t) => t.identifier === e.identifier) : t) && "identifier" in e && typeof e.identifier == "number" ? {
+		return (t === void 0 ? Pe(e) && this.employees.some((t) => t.identifier === e.identifier) : t) && Pe(e) ? {
 			employee: this.update(e) ?? e,
 			isNew: !1
 		} : {
@@ -622,10 +657,30 @@ var K = new class {
 	clear() {
 		this.employees = [], this.notify();
 	}
-}();
+}, Ie = "gdsp-employees";
+function Le(e) {
+	return Array.isArray(e);
+}
+function Re() {
+	try {
+		let e = localStorage.getItem(Ie);
+		if (e === null) return [];
+		let t = JSON.parse(e);
+		return Le(t) ? t : [];
+	} catch {
+		return [];
+	}
+}
+function ze(e) {
+	try {
+		localStorage.setItem(Ie, JSON.stringify(e));
+	} catch {}
+}
+var V = new Fe(Re());
+V.subscribe(ze);
 //#endregion
 //#region \0@oxc-project+runtime@0.146.0/helpers/esm/decorate.js
-function q(e, t, n, r) {
+function H(e, t, n, r) {
 	var i = arguments.length, a = i < 3 ? t : r === null ? r = Object.getOwnPropertyDescriptor(t, n) : r, o;
 	if (typeof Reflect == "object" && typeof Reflect.decorate == "function") a = Reflect.decorate(e, t, n, r);
 	else for (var s = e.length - 1; s >= 0; s--) (o = e[s]) && (a = (i < 3 ? o(a) : i > 3 ? o(t, n, a) : o(t, n)) || a);
@@ -633,9 +688,15 @@ function q(e, t, n, r) {
 }
 //#endregion
 //#region src/ui/ui-input.ts
-var J = class extends H {
+var U, W = class extends I {
+	static {
+		U = this;
+	}
 	constructor(...e) {
-		super(...e), this.label = "", this.name = "", this.type = "text", this.value = "", this.placeholder = "", this.required = !1, this.disabled = !1, this.errorMessage = "";
+		super(...e), this.label = "", this.name = "", this.type = "text", this.value = "", this.placeholder = "", this.required = !1, this.disabled = !1, this.errorMessage = "", this.ariaLabel = null, this.errorTextId = `ui-input-error-${U.errorTextIdSequence++}`;
+	}
+	static {
+		this.errorTextIdSequence = 0;
 	}
 	static {
 		this.styles = o`
@@ -647,7 +708,7 @@ var J = class extends H {
     }
 
     label {
-      font-size: 0.9rem;
+      font-size: 14.4px;
       font-weight: 600;
       color: var(--color-text-primary, #111111);
     }
@@ -696,7 +757,7 @@ var J = class extends H {
       background: transparent;
       color: var(--color-text-primary, #111111);
       font-family: inherit;
-      font-size: 0.95rem;
+      font-size: 15.2px;
     }
 
     input:disabled {
@@ -710,22 +771,22 @@ var J = class extends H {
 
     .error-text {
       margin: 0;
-      font-size: 0.8rem;
+      font-size: 12.8px;
       color: var(--color-danger, #dc2626);
     }
   `;
 	}
 	render() {
-		return j`
+		return D`
       ${this.renderLabel()}
       ${this.renderInputField()}
       ${this.renderErrorText()}
     `;
 	}
 	renderLabel() {
-		return this.label === "" ? N : j`
+		return this.label === "" ? k : D`
       <label for="input-field">
-        ${this.label}${this.required ? j`<span class="required-marker"> *</span>` : N}
+        ${this.label}${this.required ? D`<span class="required-marker"> *</span>` : k}
       </label>
     `;
 	}
@@ -734,8 +795,8 @@ var J = class extends H {
 			"input-wrapper",
 			this.errorMessage === "" ? "" : "invalid",
 			this.disabled ? "disabled" : ""
-		].filter((e) => e !== "").join(" "), t = this.value === null || this.value === void 0 ? "" : String(this.value);
-		return j`
+		].filter((e) => e !== "").join(" "), t = this.value == null ? "" : String(this.value);
+		return D`
       <div class=${e}>
         <slot name="icon"></slot>
         <input
@@ -745,6 +806,9 @@ var J = class extends H {
           placeholder=${this.placeholder}
           ?disabled=${this.disabled}
           ?required=${this.required}
+          aria-label=${this.ariaLabel ?? k}
+          aria-invalid=${this.errorMessage !== ""}
+          aria-describedby=${this.errorMessage === "" ? k : this.errorTextId}
           @input=${this.handleInput}
           @blur=${this.handleBlur}
         />
@@ -752,10 +816,10 @@ var J = class extends H {
     `;
 	}
 	renderErrorText() {
-		return this.errorMessage === "" ? N : j`<p class="error-text">${this.errorMessage}</p>`;
+		return this.errorMessage === "" ? k : D`<p class="error-text" id=${this.errorTextId} role="alert">${this.errorMessage}</p>`;
 	}
 	validate() {
-		let e = this.value === null || this.value === void 0 ? "" : String(this.value).trim();
+		let e = this.value == null ? "" : String(this.value).trim();
 		if (this.required && e === "") {
 			let e = this.label === "" ? this.placeholder === "" ? "Field" : this.placeholder : this.label;
 			return this.errorMessage = `${e} is required`, !1;
@@ -783,18 +847,28 @@ var J = class extends H {
 		this.disabled || this.value !== "" && this.value !== null && this.value !== void 0 && this.validate();
 	}
 };
-q([W()], J.prototype, "label", void 0), q([W()], J.prototype, "name", void 0), q([W()], J.prototype, "type", void 0), q([W()], J.prototype, "value", void 0), q([W()], J.prototype, "placeholder", void 0), q([W({
+H([R()], W.prototype, "label", void 0), H([R()], W.prototype, "name", void 0), H([R()], W.prototype, "type", void 0), H([R()], W.prototype, "value", void 0), H([R()], W.prototype, "placeholder", void 0), H([R({
 	type: Boolean,
 	reflect: !0
-})], J.prototype, "required", void 0), q([W({
+})], W.prototype, "required", void 0), H([R({
 	type: Boolean,
 	reflect: !0
-})], J.prototype, "disabled", void 0), q([W({ attribute: "error-message" })], J.prototype, "errorMessage", void 0), J = q([U("ui-input")], J);
+})], W.prototype, "disabled", void 0), H([R({ attribute: "error-message" })], W.prototype, "errorMessage", void 0), H([R({
+	type: String,
+	attribute: "aria-label"
+})], W.prototype, "ariaLabel", void 0), W = U = H([L("ui-input")], W);
 //#endregion
 //#region src/ui/ui-button.ts
-var Y = class extends H {
+var G = {
+	PRIMARY: "primary",
+	SECONDARY: "secondary",
+	DANGER: "danger",
+	CONTRAST: "contrast",
+	OUTLINE_PRIMARY: "outline-primary",
+	OUTLINE_DANGER: "outline-danger"
+}, K = class extends I {
 	constructor(...e) {
-		super(...e), this.variant = "primary", this.small = !1, this.pill = !1, this.iconOnly = !1, this.disabled = !1;
+		super(...e), this.variant = G.PRIMARY, this.small = !1, this.pill = !1, this.iconOnly = !1, this.disabled = !1, this.ariaLabel = null;
 	}
 	static {
 		this.styles = o`
@@ -811,7 +885,7 @@ var Y = class extends H {
       border-radius: 6px;
       border: 1px solid transparent;
       font-family: inherit;
-      font-size: 0.95rem;
+      font-size: 15.2px;
       font-weight: 600;
       cursor: pointer;
       transition: background-color 0.15s ease, border-color 0.15s ease;
@@ -819,7 +893,7 @@ var Y = class extends H {
 
     button.small {
       padding: 6px 12px;
-      font-size: 0.85rem;
+      font-size: 13.6px;
     }
 
     button.pill {
@@ -900,27 +974,120 @@ var Y = class extends H {
   `;
 	}
 	render() {
-		return j`
-      <button type="button" class=${[
+		return D`
+      <button
+        type="button"
+        class=${[
 			this.variant,
 			this.small ? "small" : "",
 			this.pill ? "pill" : "",
 			this.iconOnly ? "icon-only" : ""
-		].filter((e) => e !== "").join(" ")} ?disabled=${this.disabled}>
+		].filter((e) => e !== "").join(" ")}
+        ?disabled=${this.disabled}
+        aria-label=${this.ariaLabel ?? k}
+      >
         <slot></slot>
       </button>
     `;
 	}
 };
-q([W({ type: String })], Y.prototype, "variant", void 0), q([W({ type: Boolean })], Y.prototype, "small", void 0), q([W({ type: Boolean })], Y.prototype, "pill", void 0), q([W({
+H([R({ type: String })], K.prototype, "variant", void 0), H([R({ type: Boolean })], K.prototype, "small", void 0), H([R({ type: Boolean })], K.prototype, "pill", void 0), H([R({
 	type: Boolean,
 	attribute: "icon-only"
-})], Y.prototype, "iconOnly", void 0), q([W({ type: Boolean })], Y.prototype, "disabled", void 0), Y = q([U("ui-button")], Y);
+})], K.prototype, "iconOnly", void 0), H([R({
+	type: Boolean,
+	reflect: !0
+})], K.prototype, "disabled", void 0), H([R({
+	type: String,
+	attribute: "aria-label"
+})], K.prototype, "ariaLabel", void 0), K = H([L("ui-button")], K);
 //#endregion
-//#region src/components/employee-form.ts
-var X = class extends H {
+//#region src/ui/ui-toast.ts
+var Be = 3e3, q = class extends I {
 	constructor(...e) {
-		super(...e), this.employeeToEdit = null, this.draftFullName = "", this.draftDepartment = "", this.draftDesignation = "", this.draftEmailAddress = "";
+		super(...e), this.message = "", this.durationMs = Be;
+	}
+	static {
+		this.styles = o`
+    .toast {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 18px;
+      border-radius: 8px;
+      border: 1px solid var(--color-success, #16a34a);
+      background-color: var(--color-success-surface, #f0fdf4);
+      color: var(--color-text-primary, #111111);
+      z-index: 200;
+    }
+
+    .toast-icon {
+      color: var(--color-success, #16a34a);
+      font-weight: 700;
+    }
+
+    .toast-close-button {
+      border: none;
+      background: none;
+      padding: 2px;
+      cursor: pointer;
+      color: var(--color-text-secondary, #64748b);
+      font-size: 15.2px;
+    }
+  `;
+	}
+	updated(e) {
+		e.has("message") && (window.clearTimeout(this.dismissTimeoutIdentifier), this.message !== "" && (this.dismissTimeoutIdentifier = window.setTimeout(() => {
+			this.dispatchDismissed();
+		}, this.durationMs)));
+	}
+	disconnectedCallback() {
+		super.disconnectedCallback(), window.clearTimeout(this.dismissTimeoutIdentifier);
+	}
+	render() {
+		return this.message === "" ? k : D`
+      <div class="toast" role="status">
+        <span class="toast-icon">✓</span>
+        <span>${this.message}</span>
+        <button
+          type="button"
+          class="toast-close-button"
+          aria-label="Dismiss notification"
+          @click=${this.handleCloseClick}
+        >
+          ✕
+        </button>
+      </div>
+    `;
+	}
+	handleCloseClick() {
+		window.clearTimeout(this.dismissTimeoutIdentifier), this.dispatchDismissed();
+	}
+	dispatchDismissed() {
+		this.dispatchEvent(new CustomEvent("toast-dismissed", {
+			bubbles: !0,
+			composed: !0
+		}));
+	}
+};
+H([R({ type: String })], q.prototype, "message", void 0), H([R({
+	type: Number,
+	attribute: "duration-ms"
+})], q.prototype, "durationMs", void 0), q = H([L("ui-toast")], q);
+//#endregion
+//#region src/widgets/employee/employee-form.ts
+var J = {
+	FULL_NAME: "fullName",
+	DEPARTMENT: "department",
+	DESIGNATION: "designation",
+	EMAIL_ADDRESS: "emailAddress"
+}, Y = class extends I {
+	constructor(...e) {
+		super(...e), this.employeeToEdit = null, this.draftFullName = "", this.draftDepartment = "", this.draftDesignation = "", this.draftEmailAddress = "", this.toastMessage = "";
 	}
 	static {
 		this.styles = o`
@@ -951,16 +1118,17 @@ var X = class extends H {
 		e.has("employeeToEdit") && this.employeeToEdit !== null && (this.draftFullName = this.employeeToEdit.fullName, this.draftDepartment = this.employeeToEdit.department, this.draftDesignation = this.employeeToEdit.designation, this.draftEmailAddress = this.employeeToEdit.emailAddress);
 	}
 	render() {
-		return j`
+		return D`
       ${this.renderFormFields()}
       ${this.renderFormActions()}
+      ${this.renderToast()}
     `;
 	}
 	renderFormFields() {
-		return j`
+		return D`
       <div class="form-fields">
         <ui-input
-          name="fullName"
+          name=${J.FULL_NAME}
           placeholder="Full Name"
           required
           .value=${this.draftFullName}
@@ -969,7 +1137,7 @@ var X = class extends H {
           ${this.renderPersonIcon()}
         </ui-input>
         <ui-input
-          name="department"
+          name=${J.DEPARTMENT}
           placeholder="Department"
           required
           .value=${this.draftDepartment}
@@ -978,7 +1146,7 @@ var X = class extends H {
           ${this.renderBuildingIcon()}
         </ui-input>
         <ui-input
-          name="designation"
+          name=${J.DESIGNATION}
           placeholder="Designation"
           .value=${this.draftDesignation}
           @value-changed=${this.handleFieldValueChanged}
@@ -986,7 +1154,7 @@ var X = class extends H {
           ${this.renderBadgeIcon()}
         </ui-input>
         <ui-input
-          name="emailAddress"
+          name=${J.EMAIL_ADDRESS}
           type="email"
           placeholder="Email"
           required
@@ -999,19 +1167,33 @@ var X = class extends H {
     `;
 	}
 	renderFormActions() {
-		return j`
+		return D`
       <div class="form-actions">
-        <ui-button variant="primary" @click=${this.handleSaveClick}>
+        <ui-button
+          .variant=${G.PRIMARY}
+          @click=${this.handleSaveClick}
+        >
           ${this.employeeToEdit === null ? "Save" : "Update"}
         </ui-button>
-        <ui-button variant="secondary" @click=${this.handleClearClick}>
+        <ui-button
+          .variant=${G.SECONDARY}
+          @click=${this.handleClearClick}
+        >
           Clear
         </ui-button>
       </div>
     `;
 	}
+	renderToast() {
+		return D`
+      <ui-toast
+        .message=${this.toastMessage}
+        @toast-dismissed=${this.handleToastDismissed}
+      ></ui-toast>
+    `;
+	}
 	renderPersonIcon() {
-		return j`
+		return D`
       <svg
         slot="icon"
         viewBox="0 0 24 24"
@@ -1027,7 +1209,7 @@ var X = class extends H {
     `;
 	}
 	renderBuildingIcon() {
-		return j`
+		return D`
       <svg
         slot="icon"
         viewBox="0 0 24 24"
@@ -1044,7 +1226,7 @@ var X = class extends H {
     `;
 	}
 	renderBadgeIcon() {
-		return j`
+		return D`
       <svg
         slot="icon"
         viewBox="0 0 24 24"
@@ -1061,7 +1243,7 @@ var X = class extends H {
     `;
 	}
 	renderMailIcon() {
-		return j`
+		return D`
       <svg
         slot="icon"
         viewBox="0 0 24 24"
@@ -1080,26 +1262,42 @@ var X = class extends H {
 		let t = e.detail;
 		if (!t) return;
 		let { name: n, value: r } = t;
-		n === "fullName" ? this.draftFullName = r : n === "department" ? this.draftDepartment = r : n === "designation" ? this.draftDesignation = r : n === "emailAddress" && (this.draftEmailAddress = r);
+		switch (n) {
+			case J.FULL_NAME:
+				this.draftFullName = r;
+				break;
+			case J.DEPARTMENT:
+				this.draftDepartment = r;
+				break;
+			case J.DESIGNATION:
+				this.draftDesignation = r;
+				break;
+			case J.EMAIL_ADDRESS: this.draftEmailAddress = r;
+		}
 	}
 	handleSaveClick() {
 		if (!this.validateForm()) return;
-		let e = this.employeeToEdit, t = e !== null, n = {
-			identifier: e === null ? 0 : e.identifier,
-			fullName: this.draftFullName.trim(),
-			department: this.draftDepartment.trim(),
-			designation: this.draftDesignation.trim(),
-			emailAddress: this.draftEmailAddress.trim()
-		}, { employee: r, isNew: i } = K.save(n, t);
+		let e = this.employeeToEdit, t = e !== null, n = this.draftFullName.trim(), r = this.draftDepartment.trim(), i = this.draftDesignation.trim(), a = this.draftEmailAddress.trim(), o = e === null ? {
+			fullName: n,
+			department: r,
+			designation: i,
+			emailAddress: a
+		} : {
+			identifier: e.identifier,
+			fullName: n,
+			department: r,
+			designation: i,
+			emailAddress: a
+		}, { employee: s, isNew: c } = V.save(o, t);
 		this.dispatchEvent(new CustomEvent("employee-save", {
-			detail: { employee: r },
+			detail: { employee: s },
 			bubbles: !0,
 			composed: !0
-		})), this.dispatchEvent(new CustomEvent(i ? "employee-added" : "employee-updated", {
-			detail: { employee: r },
+		})), this.dispatchEvent(new CustomEvent(c ? "employee-added" : "employee-updated", {
+			detail: { employee: s },
 			bubbles: !0,
 			composed: !0
-		})), this.employeeToEdit = null, this.clearFormFields();
+		})), this.showToast(c ? "Employee added successfully!" : "Employee updated successfully!"), this.employeeToEdit = null, this.clearFormFields();
 	}
 	handleClearClick() {
 		this.clearFormFields(), this.dispatchEvent(new CustomEvent("form-cleared", {
@@ -1116,11 +1314,17 @@ var X = class extends H {
 		for (let t of this.inputElements) t.validate() || (e = !1);
 		return e;
 	}
+	showToast(e) {
+		this.toastMessage = e;
+	}
+	handleToastDismissed() {
+		this.toastMessage = "";
+	}
 };
-q([W({ attribute: !1 })], X.prototype, "employeeToEdit", void 0), q([G()], X.prototype, "draftFullName", void 0), q([G()], X.prototype, "draftDepartment", void 0), q([G()], X.prototype, "draftDesignation", void 0), q([G()], X.prototype, "draftEmailAddress", void 0), q([De("ui-input")], X.prototype, "inputElements", void 0), X = q([U("employee-form")], X);
+H([R({ attribute: !1 })], Y.prototype, "employeeToEdit", void 0), H([z()], Y.prototype, "draftFullName", void 0), H([z()], Y.prototype, "draftDepartment", void 0), H([z()], Y.prototype, "draftDesignation", void 0), H([z()], Y.prototype, "draftEmailAddress", void 0), H([z()], Y.prototype, "toastMessage", void 0), H([Ne("ui-input")], Y.prototype, "inputElements", void 0), Y = H([L("employee-form")], Y);
 //#endregion
 //#region src/ui/ui-dialog.ts
-var Z = class extends H {
+var Ve = "dialog-heading", X = class extends I {
 	constructor(...e) {
 		super(...e), this.open = !1, this.heading = "", this.confirmLabel = "Confirm", this.cancelLabel = "Cancel";
 	}
@@ -1159,7 +1363,7 @@ var Z = class extends H {
 
     .dialog-heading {
       margin: 0;
-      font-size: 1.15rem;
+      font-size: 18.4px;
       color: var(--color-text-primary, #111111);
     }
 
@@ -1167,7 +1371,7 @@ var Z = class extends H {
       border: none;
       background: none;
       padding: 4px;
-      font-size: 1.1rem;
+      font-size: 17.6px;
       cursor: pointer;
       color: var(--color-text-secondary, #64748b);
     }
@@ -1184,20 +1388,26 @@ var Z = class extends H {
   `;
 	}
 	render() {
-		return this.open ? j`
+		return this.open ? D`
       <div class="dialog-backdrop" @click=${this.handleCancel}>
-        <div class="dialog-panel" @click=${this.handlePanelClick}>
+        <div
+          class="dialog-panel"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby=${Ve}
+          @click=${this.handlePanelClick}
+        >
           ${this.renderDialogHeader()}
           <div class="dialog-body"><slot></slot></div>
           ${this.renderDialogActions()}
         </div>
       </div>
-    ` : N;
+    ` : k;
 	}
 	renderDialogHeader() {
-		return j`
+		return D`
       <div class="dialog-header">
-        <h2 class="dialog-heading">${this.heading}</h2>
+        <h2 class="dialog-heading" id=${Ve}>${this.heading}</h2>
         <button
           type="button"
           class="dialog-close-button"
@@ -1210,12 +1420,18 @@ var Z = class extends H {
     `;
 	}
 	renderDialogActions() {
-		return j`
+		return D`
       <div class="dialog-actions">
-        <ui-button variant="secondary" @click=${this.handleCancel}>
+        <ui-button
+          .variant=${G.SECONDARY}
+          @click=${this.handleCancel}
+        >
           ${this.cancelLabel}
         </ui-button>
-        <ui-button variant="danger" @click=${this.handleConfirm}>
+        <ui-button
+          .variant=${G.DANGER}
+          @click=${this.handleConfirm}
+        >
           ${this.confirmLabel}
         </ui-button>
       </div>
@@ -1237,18 +1453,18 @@ var Z = class extends H {
 		}));
 	}
 };
-q([W({ type: Boolean })], Z.prototype, "open", void 0), q([W({ type: String })], Z.prototype, "heading", void 0), q([W({
+H([R({ type: Boolean })], X.prototype, "open", void 0), H([R({ type: String })], X.prototype, "heading", void 0), H([R({
 	type: String,
 	attribute: "confirm-label"
-})], Z.prototype, "confirmLabel", void 0), q([W({
+})], X.prototype, "confirmLabel", void 0), H([R({
 	type: String,
 	attribute: "cancel-label"
-})], Z.prototype, "cancelLabel", void 0), Z = q([U("ui-dialog")], Z);
+})], X.prototype, "cancelLabel", void 0), X = H([L("ui-dialog")], X);
 //#endregion
-//#region src/components/employee-table.ts
-var Q = class extends H {
+//#region src/widgets/employee/employee-table.ts
+var Z = class extends I {
 	constructor(...e) {
-		super(...e), this.employees = null, this.serviceEmployees = [], this.searchTerm = "", this.currentPageNumber = 1, this.employeePendingDeletion = null, this.pageSize = 5;
+		super(...e), this.employees = null, this.serviceEmployees = [], this.searchTerm = "", this.currentPageNumber = 1, this.employeePendingDeletion = null, this.toastMessage = "", this.pageSize = 5;
 	}
 	static {
 		this.styles = o`
@@ -1290,7 +1506,7 @@ var Q = class extends H {
 
     .employee-header-row {
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 14.4px;
       color: var(--color-text-secondary, #64748b);
       background-color: var(--color-background, #f1f5f9);
       border-bottom: 1px solid var(--color-border, #e2e8f0);
@@ -1324,7 +1540,7 @@ var Q = class extends H {
       border-radius: 50%;
       background-color: var(--color-primary, #2563eb);
       color: var(--color-primary-contrast, #ffffff);
-      font-size: 0.72rem;
+      font-size: 11.52px;
       font-weight: 700;
       flex-shrink: 0;
     }
@@ -1346,12 +1562,12 @@ var Q = class extends H {
     }
 
     .empty-state-icon {
-      font-size: 2.4rem;
+      font-size: 38.4px;
     }
 
     .empty-state-title {
       margin: 0;
-      font-size: 1.05rem;
+      font-size: 16.8px;
       color: var(--color-text-primary, #111111);
     }
 
@@ -1367,7 +1583,7 @@ var Q = class extends H {
       justify-content: space-between;
       gap: 12px;
       color: var(--color-text-secondary, #64748b);
-      font-size: 0.9rem;
+      font-size: 14.4px;
     }
 
     .pagination-controls {
@@ -1378,7 +1594,7 @@ var Q = class extends H {
   `;
 	}
 	connectedCallback() {
-		super.connectedCallback(), this.unsubscribeService = K.subscribe((e) => {
+		super.connectedCallback(), this.unsubscribeService = V.subscribe((e) => {
 			this.serviceEmployees = e;
 		});
 	}
@@ -1390,19 +1606,21 @@ var Q = class extends H {
 	}
 	render() {
 		let e = this.computeFilteredEmployees();
-		return j`
+		return D`
       ${this.renderTableToolbar()}
       ${this.renderTableBody(e)}
       ${this.renderDeleteConfirmationDialog()}
+      ${this.renderToast()}
     `;
 	}
 	renderTableToolbar() {
-		return j`
+		return D`
       <div class="table-toolbar">
         <ui-input
           class="search-field"
           name="searchTerm"
           placeholder="Search employees..."
+          aria-label="Search employees"
           .value=${this.searchTerm}
           @value-changed=${this.handleSearchValueChanged}
         >
@@ -1415,7 +1633,7 @@ var Q = class extends H {
 		if (this.activeEmployees.length === 0) return this.renderEmptyState();
 		if (e.length === 0) return this.renderNoSearchMatches();
 		let t = Math.max(1, Math.ceil(e.length / this.pageSize)), n = Math.min(this.currentPageNumber, t), r = (n - 1) * this.pageSize, i = e.slice(r, r + this.pageSize);
-		return j`
+		return D`
       <div class="table-scroll">
         <div class="table-grid">
           ${this.renderHeaderRow()}
@@ -1426,7 +1644,7 @@ var Q = class extends H {
     `;
 	}
 	renderHeaderRow() {
-		return j`
+		return D`
       <div class="employee-header-row">
         <span>Name</span>
         <span>Department</span>
@@ -1437,7 +1655,7 @@ var Q = class extends H {
     `;
 	}
 	renderEmployeeRow(e) {
-		return j`
+		return D`
       <div class="employee-row">
         <span class="cell-value employee-identity">
           <span class="employee-avatar">
@@ -1450,7 +1668,7 @@ var Q = class extends H {
         <span class="cell-value">${e.emailAddress}</span>
         <span class="action-buttons">
           <ui-button
-            variant="outline-primary"
+            .variant=${G.OUTLINE_PRIMARY}
             small
             icon-only
             aria-label="Edit employee"
@@ -1459,7 +1677,7 @@ var Q = class extends H {
             ${this.renderPencilIcon()}
           </ui-button>
           <ui-button
-            variant="outline-danger"
+            .variant=${G.OUTLINE_DANGER}
             small
             icon-only
             aria-label="Delete employee"
@@ -1472,21 +1690,24 @@ var Q = class extends H {
     `;
 	}
 	renderEmptyState() {
-		return j`
+		return D`
       <div class="empty-state">
         <span class="empty-state-icon">📁</span>
         <h3 class="empty-state-title">No employees found</h3>
         <p class="empty-state-description">
           Add your first employee to get started.
         </p>
-        <ui-button variant="primary" @click=${this.handleAddEmployeeClick}>
+        <ui-button
+          .variant=${G.PRIMARY}
+          @click=${this.handleAddEmployeeClick}
+        >
           + Add Employee
         </ui-button>
       </div>
     `;
 	}
 	renderNoSearchMatches() {
-		return j`
+		return D`
       <div class="empty-state">
         <span class="empty-state-icon">🔍</span>
         <h3 class="empty-state-title">No employees match your search</h3>
@@ -1497,7 +1718,7 @@ var Q = class extends H {
     `;
 	}
 	renderTableFooter(e, t, n, r, i) {
-		return j`
+		return D`
       <div class="table-footer">
         <span>
           Showing ${t + 1} to ${t + n}
@@ -1505,7 +1726,7 @@ var Q = class extends H {
         </span>
         <span class="pagination-controls">
           <ui-button
-            variant="secondary"
+            .variant=${G.SECONDARY}
             small
             pill
             .disabled=${i === 1}
@@ -1513,9 +1734,9 @@ var Q = class extends H {
           >
             ‹
           </ui-button>
-          ${Array.from({ length: r }, (e, t) => t + 1).map((e) => j`
+          ${Array.from({ length: r }, (e, t) => t + 1).map((e) => D`
               <ui-button
-                variant=${e === i ? "primary" : "secondary"}
+                .variant=${e === i ? G.PRIMARY : G.SECONDARY}
                 small
                 pill
                 @click=${() => this.handlePageChange(e)}
@@ -1524,7 +1745,7 @@ var Q = class extends H {
               </ui-button>
             `)}
           <ui-button
-            variant="secondary"
+            .variant=${G.SECONDARY}
             small
             pill
             .disabled=${i === r}
@@ -1537,7 +1758,7 @@ var Q = class extends H {
     `;
 	}
 	renderSearchIcon() {
-		return j`
+		return D`
       <svg
         slot="icon"
         viewBox="0 0 24 24"
@@ -1553,7 +1774,7 @@ var Q = class extends H {
     `;
 	}
 	renderPencilIcon() {
-		return j`
+		return D`
       <svg
         viewBox="0 0 24 24"
         fill="none"
@@ -1568,7 +1789,7 @@ var Q = class extends H {
     `;
 	}
 	renderTrashIcon() {
-		return j`
+		return D`
       <svg
         viewBox="0 0 24 24"
         fill="none"
@@ -1582,6 +1803,14 @@ var Q = class extends H {
         <path d="m19 6-1 14H6L5 6" />
         <path d="M10 11v6M14 11v6" />
       </svg>
+    `;
+	}
+	renderToast() {
+		return D`
+      <ui-toast
+        .message=${this.toastMessage}
+        @toast-dismissed=${this.handleToastDismissed}
+      ></ui-toast>
     `;
 	}
 	computeFilteredEmployees() {
@@ -1609,7 +1838,7 @@ var Q = class extends H {
 	}
 	handleDeleteConfirmed() {
 		let e = this.employeePendingDeletion;
-		e !== null && (this.employeePendingDeletion = null, K.delete(e.identifier), this.dispatchEvent(new CustomEvent("employee-delete", {
+		e !== null && (this.employeePendingDeletion = null, V.delete(e.identifier), this.dispatchEvent(new CustomEvent("employee-delete", {
 			detail: { employee: e },
 			bubbles: !0,
 			composed: !0
@@ -1617,13 +1846,13 @@ var Q = class extends H {
 			detail: { employee: e },
 			bubbles: !0,
 			composed: !0
-		})));
+		})), this.showToast("Employee deleted successfully!"));
 	}
 	handleDeleteCancelled() {
 		this.employeePendingDeletion = null;
 	}
 	renderDeleteConfirmationDialog() {
-		return j`
+		return D`
       <ui-dialog
         .open=${this.employeePendingDeletion !== null}
         heading="Delete Employee"
@@ -1643,13 +1872,87 @@ var Q = class extends H {
 			composed: !0
 		}));
 	}
+	showToast(e) {
+		this.toastMessage = e;
+	}
+	handleToastDismissed() {
+		this.toastMessage = "";
+	}
 };
-q([W({ attribute: !1 })], Q.prototype, "employees", void 0), q([G()], Q.prototype, "serviceEmployees", void 0), q([G()], Q.prototype, "searchTerm", void 0), q([G()], Q.prototype, "currentPageNumber", void 0), q([G()], Q.prototype, "employeePendingDeletion", void 0), Q = q([U("employee-table")], Q);
+H([R({ attribute: !1 })], Z.prototype, "employees", void 0), H([z()], Z.prototype, "serviceEmployees", void 0), H([z()], Z.prototype, "searchTerm", void 0), H([z()], Z.prototype, "currentPageNumber", void 0), H([z()], Z.prototype, "employeePendingDeletion", void 0), H([z()], Z.prototype, "toastMessage", void 0), Z = H([L("employee-table")], Z);
+//#endregion
+//#region src/widgets/employee/employee-widget.ts
+var Q = class extends I {
+	static {
+		this.styles = o`
+    :host {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 960px;
+      box-sizing: border-box;
+      gap: 24px;
+    }
+
+    .content-card {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 24px;
+      background-color: var(--color-surface, #ffffff);
+      border: 1px solid var(--color-border, #e2e8f0);
+      border-radius: 10px;
+    }
+  `;
+	}
+	render() {
+		return D`
+      ${this.renderFormCard()}
+      ${this.renderTableCard()}
+    `;
+	}
+	renderFormCard() {
+		return D`
+      <section class="content-card">
+        <employee-form @form-cleared=${this.handleFormCleared}></employee-form>
+      </section>
+    `;
+	}
+	renderTableCard() {
+		return D`
+      <section class="content-card">
+        <employee-table
+          @employee-edit-request=${this.handleEmployeeEditRequest}
+          @employee-deleted=${this.handleEmployeeDeleted}
+          @employee-add-request=${this.handleAddEmployeeRequest}
+        ></employee-table>
+      </section>
+    `;
+	}
+	handleEmployeeDeleted(e) {
+		this.employeeFormElement.employeeToEdit?.identifier === e.detail.employee.identifier && (this.employeeFormElement.employeeToEdit = null);
+	}
+	handleEmployeeEditRequest(e) {
+		this.employeeFormElement.employeeToEdit = e.detail.employee, this.scrollFormIntoView();
+	}
+	handleFormCleared() {
+		this.employeeFormElement.employeeToEdit = null;
+	}
+	handleAddEmployeeRequest() {
+		this.employeeFormElement.employeeToEdit = null, this.scrollFormIntoView();
+	}
+	scrollFormIntoView() {
+		this.employeeFormElement.scrollIntoView({
+			behavior: "smooth",
+			block: "start"
+		});
+	}
+};
+H([je("employee-form")], Q.prototype, "employeeFormElement", void 0), Q = H([L("employee-widget")], Q);
 //#endregion
 //#region src/app-shell.ts
-var $ = class extends H {
+var $ = class extends I {
 	constructor(...e) {
-		super(...e), this.toastMessage = "", this.lastEmittedEventName = "";
+		super(...e), this.lastEmittedEventName = "";
 	}
 	static {
 		this.styles = o`
@@ -1682,53 +1985,13 @@ var $ = class extends H {
 
     .header-title {
       margin: 0;
-      font-size: 1.6rem;
+      font-size: 25.6px;
     }
 
     .header-subtitle {
       margin: 4px 0 0;
-      font-size: 0.95rem;
+      font-size: 15.2px;
       opacity: 0.85;
-    }
-
-    .content-card {
-      width: 100%;
-      max-width: 960px;
-      box-sizing: border-box;
-      padding: 24px;
-      background-color: var(--color-surface, #ffffff);
-      border: 1px solid var(--color-border, #e2e8f0);
-      border-radius: 10px;
-    }
-
-    .toast {
-      position: fixed;
-      top: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 18px;
-      border-radius: 8px;
-      border: 1px solid var(--color-success, #16a34a);
-      background-color: var(--color-success-surface, #f0fdf4);
-      color: var(--color-text-primary, #111111);
-      z-index: 200;
-    }
-
-    .toast-icon {
-      color: var(--color-success, #16a34a);
-      font-weight: 700;
-    }
-
-    .toast-close-button {
-      border: none;
-      background: none;
-      padding: 2px;
-      cursor: pointer;
-      color: var(--color-text-secondary, #64748b);
-      font-size: 0.95rem;
     }
 
     .events-strip {
@@ -1743,7 +2006,7 @@ var $ = class extends H {
       border: 1px dashed var(--color-border, #e2e8f0);
       border-radius: 8px;
       color: var(--color-text-secondary, #64748b);
-      font-size: 0.85rem;
+      font-size: 13.6px;
     }
 
     .last-event {
@@ -1753,120 +2016,55 @@ var $ = class extends H {
   `;
 	}
 	render() {
-		return j`
-      ${this.renderToast()}
+		return D`
       ${this.renderApplicationHeader()}
-      ${this.renderFormCard()}
-      ${this.renderTableCard()}
+      ${this.renderWidgets()}
       ${this.renderEventsStrip()}
     `;
 	}
 	renderApplicationHeader() {
-		return j`
+		return D`
       <header class="application-header">
         <div>
           <h1 class="header-title">Employee Management</h1>
           <p class="header-subtitle">Manage your organization employees</p>
         </div>
-        <ui-button variant="contrast" @click=${this.handleAddEmployeeRequest}>
-          + Add Employee
-        </ui-button>
       </header>
     `;
 	}
-	renderFormCard() {
-		return j`
-      <section class="content-card">
-        <employee-form
-          @employee-added=${this.handleEmployeeAdded}
-          @employee-updated=${this.handleEmployeeUpdated}
-          @form-cleared=${this.handleFormCleared}
-        ></employee-form>
-      </section>
-    `;
-	}
-	renderTableCard() {
-		return j`
-      <section class="content-card">
-        <employee-table
-          @employee-edit-request=${this.handleEmployeeEditRequest}
-          @employee-deleted=${this.handleEmployeeDeleted}
-          @employee-add-request=${this.handleAddEmployeeRequest}
-        ></employee-table>
-      </section>
+	renderWidgets() {
+		return D`
+      <employee-widget
+        @employee-added=${this.handleEmployeeAdded}
+        @employee-updated=${this.handleEmployeeUpdated}
+        @employee-deleted=${this.handleEmployeeDeleted}
+      ></employee-widget>
     `;
 	}
 	renderEventsStrip() {
-		return j`
+		return D`
       <footer class="events-strip">
         <span>
           Events: employee-added, employee-updated, employee-deleted
         </span>
-        ${this.lastEmittedEventName === "" ? N : j`<span class="last-event">
+        ${this.lastEmittedEventName === "" ? k : D`<span class="last-event">
               Last event: ${this.lastEmittedEventName}
             </span>`}
       </footer>
     `;
 	}
-	renderToast() {
-		return this.toastMessage === "" ? N : j`
-      <div class="toast" role="status">
-        <span class="toast-icon">✓</span>
-        <span>${this.toastMessage}</span>
-        <button
-          type="button"
-          class="toast-close-button"
-          aria-label="Dismiss notification"
-          @click=${this.handleToastClose}
-        >
-          ✕
-        </button>
-      </div>
-    `;
-	}
 	handleEmployeeAdded(e) {
-		this.lastEmittedEventName = "employee-added", this.showToast("Employee added successfully!");
+		this.lastEmittedEventName = "employee-added";
 	}
 	handleEmployeeUpdated(e) {
-		this.lastEmittedEventName = "employee-updated", this.showToast("Employee updated successfully!");
+		this.lastEmittedEventName = "employee-updated";
 	}
 	handleEmployeeDeleted(e) {
 		this.lastEmittedEventName = "employee-deleted";
-		let t = this.getFormElement();
-		t && t.employeeToEdit?.identifier === e.detail.employee.identifier && (t.employeeToEdit = null), this.showToast("Employee deleted successfully!");
-	}
-	handleEmployeeEditRequest(e) {
-		let t = this.getFormElement();
-		t && (t.employeeToEdit = e.detail.employee), this.scrollFormIntoView();
-	}
-	handleFormCleared() {
-		let e = this.getFormElement();
-		e && (e.employeeToEdit = null);
-	}
-	handleAddEmployeeRequest() {
-		let e = this.getFormElement();
-		e && (e.employeeToEdit = null), this.scrollFormIntoView();
-	}
-	getFormElement() {
-		return this.renderRoot.querySelector("employee-form");
-	}
-	handleToastClose() {
-		this.toastMessage = "", window.clearTimeout(this.toastTimeoutIdentifier);
-	}
-	scrollFormIntoView() {
-		this.getFormElement()?.scrollIntoView({
-			behavior: "smooth",
-			block: "start"
-		});
-	}
-	showToast(e) {
-		this.toastMessage = e, window.clearTimeout(this.toastTimeoutIdentifier), this.toastTimeoutIdentifier = window.setTimeout(() => {
-			this.toastMessage = "";
-		}, 3e3);
 	}
 };
 //#endregion
 //#region src/employee-app.ts
-q([G()], $.prototype, "toastMessage", void 0), q([G()], $.prototype, "lastEmittedEventName", void 0), $ = q([U("app-shell")], $), customElements.get("employee-app") || customElements.define("employee-app", class extends $ {});
+H([z()], $.prototype, "lastEmittedEventName", void 0), $ = H([L("app-shell")], $), customElements.get("employee-app") || customElements.define("employee-app", class extends $ {});
 //#endregion
 export { $ as AppShell, $ as EmployeeApp };
